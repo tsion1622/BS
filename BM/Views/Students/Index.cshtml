@@ -1,0 +1,42 @@
+﻿ @model List<Students>
+  
+  @{
+    int Count = 1;
+}
+     <table class="table table-hover table-bordered">
+         <tr>
+             
+        <td style="width:15px;">
+            No.
+        </td>
+             <td>
+                 FirstName
+             </td>
+        <td>
+            FatherName
+        </td>
+       
+         </tr>
+@foreach (var stud in Model)
+{
+    <tr>
+            <td>
+                @Count
+            </td>
+        <td>
+        @stud.Name  
+            </td>
+            <td>
+                @stud.FatherName
+            </td>
+        
+        </tr>
+       
+        Count++;
+    }
+    <tr>
+    <td colspan="3">
+        Total : @Model.Count
+    </td>
+    </tr>
+</table> 

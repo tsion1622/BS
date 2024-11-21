@@ -1,0 +1,15 @@
+﻿@model List<Teacher>
+<h1>
+    List of Teachers
+</h1>
+
+@ViewBag.TotalTeachers
+@foreach (var teach in Model)
+{
+    <li>
+        @teach.Id @teach.FirstName @teach.MiddelName @teach.Age
+    </li>
+    <a asp-action="Details" asp-controller="Teacher" asp-route-id="@teach.Id">
+        go to detail
+    </a>
+}

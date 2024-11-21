@@ -1,0 +1,78 @@
+﻿@* @model List<Teacher>
+<h1>
+    List of Teachers
+</h1>
+
+@ViewBag.TotalTeachers
+@foreach (var teach in Model)
+{
+    <li>
+        @teach.Id @teach.FirstName @teach.MiddelName @teach.Age
+    </li>
+    <a asp-action="Details" asp-controller="Teacher" asp-route-id="@teach.Id">
+        go to detail
+    </a>
+}
+ *@
+ @model List<Employees>
+@{
+    int Count = 1;
+}
+<table class="table table-hover ">
+    <tr>
+
+        <td style="width:15px;">
+            No.
+        </td>
+        <td>
+            FirstName
+        </td>
+        <td>
+            MiddelName
+        </td>
+        <td>
+            Email
+        </td>
+        <td>
+            UserName
+        </td>
+        <td>
+            #
+        </td>
+
+
+    </tr>
+    @foreach (var emp in Model)
+    {
+        <tr>
+            <td>
+                @Count
+            </td>
+            <td>
+                @emp.FirstName
+            </td>
+            <td>
+                @emp.MiddelName
+            </td>
+            <td>
+                @emp.Email
+            </td>
+            <td>
+                @emp.UserName
+            </td>
+            <td>
+                <a asp-action="Details" asp-controller="Employees" asp-route-id="@emp.Id">
+                    Go To Detail
+               </a>
+            </td>
+
+        </tr>
+
+        Count++;
+    }
+    <tr>
+        <td colspan="6">
+            Total : @Model.Count
+        </td>
+    </tr>
+</table>

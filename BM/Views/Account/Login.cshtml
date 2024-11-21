@@ -1,0 +1,39 @@
+﻿@if (TempData["error"]!= null)
+{
+    @TempData["error"]
+}
+
+@if (Context.Session.GetString("FirstName")!= null)
+{
+    <h4>
+        Welcome @Context.Session.GetString("FirstName")
+    </h4>
+}
+@if (TempData["Success"]!= null)
+{
+    <div class="alert alert-primary" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
+<form asp-action="Login" method="post">
+    <h2>LogIn</h2>
+  
+    <div>
+        <label for="username">Username:</label>
+        <input class="form-control" type="text" name="username" id="username" required />
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input class="form-control" type="text" name="password" id="password" required />
+    </div>
+   
+    
+   <button type="submit" class="btn btn-primary">
+    Login
+   </button>
+
+    <a asp-action="VerifyEmail" asp-controller="Profile">
+        Forgot Password?
+    </a>
+</form>

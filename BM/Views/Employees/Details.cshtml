@@ -1,0 +1,33 @@
+﻿@model Employees
+<table class="table table-hover table-bordered">
+    <tr>
+        <td>
+            <strong> FirstName :  </strong>    @Model.FirstName
+            
+        </td>
+       
+    </tr>
+    <tr>
+        <td>
+            <strong>   MiddelName : </strong>     @Model.MiddelName  <strong>   </strong>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong> Email : </strong>   @Model.Email
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>   UserName :  </strong>  @Model.UserName
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+    </tr>
+
+</table>
+<a asp-action="Index" asp-controller="Employees">
+    Back to Index
+</a>

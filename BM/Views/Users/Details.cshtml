@@ -1,0 +1,180 @@
+﻿@model BM.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MiddleName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MiddleName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Gender.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+@* <button type="button" class="btn btn-primary" >
+    Read Message
+</button> *@
+
+@* <button type="button" class="btn btn-primary" >
+    Read Message
+</button> *@
+
+
+<div class="modal fade" id="modal_read" tabindex="-1" aria-labelledby="modal_readLable" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Notification</h1>
+                <button type="button" onclick="Reload()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body " id="mes">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="Reload()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-hover table-sm">
+    <thead>
+        <tr>
+            @* <th style="width: 35px">Message</th> *@
+            <th>NotificationStatus</th>
+            <th>NotificationType</th>
+            <th>NotificationDate</th>
+           
+          
+            <th class="p-0 nosort text-center" style="width: 30px;">
+                <i class="icon-menu-open2"></i>
+                <button type="button" class=" btn btn-outline-dark position-relative">
+                    Tot
+                    @if (Model.Notifications.Where(x => x.NotificationStatus.Id == 1).Any())
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@Model.Notifications.Count(x => x.NotificationStatus.Id == 1)</span>
+                    }
+                </button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+@foreach (var notification in Model.Notifications)
+{
+    
+     <tr>
+               @*  <td> @notification.Message</td> *@
+                <td>@notification.NotificationStatus.Name</td>
+                <td> @notification.NotificationType.Name</td>
+                <td> @notification.NotificationDate</td>
+                <td>
+                 
+
+                    <a href="#" class="btn btn-outline-info position-relative" data-bs-toggle="modal" data-bs-target="#modal_read" onclick="ChangeStatus('@notification.Id', '@notification.Message')">
+                        @if (notification.NotificationStatus.Id == 1)
+                        {
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                New
+                            </span>
+                        }
+                       
+                        <i class="icon-checkmark3 font-size-base mr-1"></i> Read
+                    </a>
+                    
+                </td>
+            </tr>
+           
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+
+        function ChangeStatus(id ,Message) {
+          $("#mes").append(`<p>${Message}</p>`)
+
+            $.ajax({
+                type: 'POST',
+                url: '/Notifications/MakeAsRead',
+                data: {
+                    'id': id
+                   
+                    },
+                success: function (response) {
+
+                   // location.reload();
+                },
+                error: function () {
+                    alert('Error .');
+                }
+            });
+        }
+        function Reload() {
+            location.reload();
+        }
+    
+    </script>
+
+}

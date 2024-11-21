@@ -1,0 +1,15 @@
+﻿@model string
+<form asp-action="addResult" method="post">
+    <div class="col-md-6">
+        <lable for= "firstNumber">  FirstNumber </lable>
+<input class="form-control" type="text" name="a"  required />
+        <lable for="secondNumber">  SecondNumber </lable>
+<input class="form-control" type="text" name="b"  required />
+<button type="submit">add</button>
+    </div>
+</form>
+<h1> @ViewBag.mul </h1>
+<h1>  @ViewBag.add </h1>
+<p>
+    @Model
+</p>

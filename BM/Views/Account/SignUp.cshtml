@@ -1,0 +1,47 @@
+﻿
+@TempData["Error"]
+<form asp-action="SignUp" asp-controller="Account" method="post">
+    <h2>SignUp</h2>
+    <div>
+        <label for="FirstName">FirstName:</label>
+        <input class="form-control" type="text" name="firstName" id="FirstName" required />
+
+    </div>
+    <div>
+        <label for="MiddleName">MiddleName:</label>
+        <input class="form-control" type="text" name="middleName" id="MiddleName" required />
+    </div>
+    <div>
+        <label for="LastName">LastName:</label>
+        <input class="form-control" type="text" name="lastName" id="LastName" required />
+    </div>
+   <div>
+        <label for="genderId">Gender</label>
+    </div>
+    <div>
+        <label for="UserName">UserName:</label>
+        <input class="form-control" type="text" name="userName" id="UserName" required />
+    </div>
+    <div>
+        <label for="Password">Password:</label>
+        <input class="form-control" type="text" name="password" id="Password" required />
+    </div>
+   
+    <div>
+        <label for="PhoneNumber">PhoneNumber:</label>
+        <input class="form-control" type="text" name="phoneNumber" id="PhoneNumber" required />
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input class="form-control" type="email" name="email" id="email" required />
+    </div>
+    <div class="form-check mb-3">
+        <select id="GenderId" name="genderId" class="form-control" required>
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+        </select>
+    </div>
+   <button type="submit" class="btn btn-outline-primary">
+      SignUp
+   </button>
+</form>

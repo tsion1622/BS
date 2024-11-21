@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_LayoutLogIn";
+}
+
+<div class="card">
+    <div class="card-header">
+    </div>
+    <div class="card-body">
+        <div class="col-md-6">
+        <form method="post" action="">
+
+            <div>
+            <label  for="FirstName">FirstName:</label>
+            <input class="form-control" type="text" name="FirstName" id="FirstName" required />
+                    
+            </div>
+            <div>
+                <label for="MiddelName">MiddelName:</label>
+                    <input class="form-control" type="text" name="MiddelName" id="MiddelName" required />
+            </div>
+            <div>
+                <label for="username">Username:</label>
+                    <input class="form-control" type="text" name="username" id="username" required />
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                    <input class="form-control" type="text" name="password" id="password" required />
+            </div>
+            <div>
+                <label for="PhoneNumber">PhoneNumber:</label>
+                    <input class="form-control" type="text" name="PhoneNumber" id="PhoneNumber" required />
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                    <input class="form-control" type="email" name="email" id="email" required />
+            </div>
+            
+        </form>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div>
+            <button type="submit">LogIn</button>
+        </div>
+        <p Need Account SgnUp?></p>
+        <a asp-action="SignUp" asp-controller="Home">
+            SignUp
+
+        </a>
+    </div>
+</div>
