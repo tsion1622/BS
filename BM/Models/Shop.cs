@@ -15,11 +15,11 @@ public partial class Shop
     [StringLength(50)]
     public string Name { get; set; }
 
+    public int? ShopRequestId { get; set; }
+
     public int UserId { get; set; }
 
     public int BusinessAreaId { get; set; }
-
-    public int ItemId { get; set; }
 
     [Required]
     [StringLength(100)]
@@ -33,9 +33,12 @@ public partial class Shop
     [InverseProperty("Shops")]
     public virtual BusinessArea BusinessArea { get; set; }
 
-    [ForeignKey("ItemId")]
+    [InverseProperty("Shop")]
+    public virtual ICollection<ShopItem> ShopItems { get; set; } = new List<ShopItem>();
+
+    [ForeignKey("ShopRequestId")]
     [InverseProperty("Shops")]
-    public virtual Item Item { get; set; }
+    public virtual ShopRequest ShopRequest { get; set; }
 
     [ForeignKey("UserId")]
     [InverseProperty("Shops")]
