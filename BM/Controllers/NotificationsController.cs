@@ -4,16 +4,21 @@ using Microsoft.EntityFrameworkCore;
 //using BM.Uitilities;
 using BM.Models;
 using Portal.Utilities;
+using Microsoft.AspNetCore.SignalR;
+using BM.SignalR.hub;
 
 namespace BM.Controllers
 {
     public class NotificationsController : Controller
     {
         private readonly BIMSContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
+        private CancellationToken message;
 
-        public NotificationsController(BIMSContext context)
+        public NotificationsController(BIMSContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
 
@@ -22,28 +27,46 @@ namespace BM.Controllers
         public IActionResult SendToAll()
         {
             ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name");
-            return View(); // Show a view where the admin can enter message details
+            return View(); 
         }
+        //public IActionResult Notificationlist()
+        //{
+           
+        //     return View();
+        //}
 
-        // POST: Notifications/SendToAll
+
+       
+       
+        
+
+    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendToAll([Bind("Message,NotificationTypeId")] Notification notification)
         {
             if (ModelState.IsValid)
             {
-                // Get all users
+                
                 var users = await _context.Users.Where(u => !u.IsDeleted).ToListAsync();
 
                 foreach (var user in users)
                 {
                     SaveNotification(notification.Message, notification.NotificationTypeId, user.Id);
                 }
-               
-                return RedirectToAction(nameof(Index)); 
+
+                ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name");
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", notification.Message);
+
+                //return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Notification sent to all users!" });
             }
-            ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name");
-            return View(); 
+            return Json(new { success = false, message = "Failed to send notification." });
+        
+
+    
+
+           
         }
 
         private void SaveNotification(string message,int notificationTypeId,  int userId )
