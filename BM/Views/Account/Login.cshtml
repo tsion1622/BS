@@ -1,22 +1,33 @@
-﻿@if (TempData["error"]!= null)
+﻿
+@if (TempData["ErrorMessage"] != null)
+{
+    @TempData["ErrorMessage"]
+}
+@if (TempData["error"]!= null)
 {
     @TempData["error"]
 }
 
-@if (Context.Session.GetString("FirstName")!= null)
+@* @if (Context.Session.GetString("FirstName")!= null)
 {
     <h4>
         Welcome @Context.Session.GetString("FirstName")
     </h4>
-}
+} *@
 @if (TempData["Success"]!= null)
 {
     <div class="alert alert-primary" role="alert">
         @TempData["Success"]
     </div>
+} 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Error"]
+    </div>
 }
 
-<form asp-action="Login" method="post">
+@* <form asp-action="Login" method="post">
     <h2>LogIn</h2>
   
     <div>
@@ -36,4 +47,109 @@
     <a asp-action="VerifyEmail" asp-controller="Profile">
         Forgot Password?
     </a>
-</form>
+</form> *@
+<section class="vh-100" style="background-color: #f9f9f9; margin-top: -10px; border-radius: 25px; transition: background-color 0.5s ease;"
+         onmouseover="this.style.backgroundColor='#e0f7fa';"
+         onmouseout="this.style.backgroundColor='#f9f9f9'; ">
+    <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="~/images/download (1).jpg"
+             
+
+                     class="img-fluid"
+                     alt="Sample image"
+                     style="width: 400px; height: 300px; " />
+            </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <p class="text-center h1 fw-bold mb-4">👋 Welcome Back!</p>
+                <form asp-action="Login" method="post">
+                    <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+                        <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+
+                        <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+
+                        <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                    </div>
+
+                    <div class="divider d-flex align-items-center my-4">
+                        <p class="text-center fw-bold mx-3 mb-0">Or</p>
+                    </div>
+
+                    <!-- Email input -->
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="text" id="username" name="username" class="form-control form-control-lg"
+                               placeholder="Enter a valid username " autocomplete="off" />
+                        <label class="form-label" for="username">UserName</label>
+                    </div>
+                   
+                    <!-- Password input -->
+                    <div data-mdb-input-init class="form-outline mb-3">
+                        <input type="password" id="password" name="password" class="form-control form-control-lg"
+                               placeholder="Enter password" autocomplete="off" />
+                        <label class="form-label" for="password">Password</label>
+                    </div>
+                   
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Checkbox -->
+                        <div class="form-check mb-0">
+                            <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+                            <label class="form-check-label" for="form2Example3">
+                                Remember me
+                            </label>
+                        </div>
+                       @*  <a href="#!" class="text-body">Forgot password?</a> *@
+                        <a asp-action="VerifyEmail" asp-controller="Profile" class="text-body">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                            Login
+                        </button>
+                        <p class="small fw-bold mt-2 pt-1 mb-0">
+                            Don't have an account? <a asp-action="SignUp"  asp-controller="Account"
+                                                      class="link-danger"> 👉SignUp</a>
+                        </p>
+                    </div>
+                   
+                </form>
+            </div>
+        </div>
+    </div>
+   @*  <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+        <!-- Copyright -->
+         <div class="text-white mb-3 mb-md-0">
+            Copyright © 2020. All rights reserved.
+        </div> *@
+        <!-- Copyright -->
+        <!-- Right -->
+        <div>
+            <a href="#!" class="text-white me-4">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#!" class="text-white me-4">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#!" class="text-white me-4">
+                <i class="fab fa-google"></i>
+            </a>
+            <a href="#!" class="text-white">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </div>
+        <!-- Right -->
+    </div>
+</section>
+ <head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMI7brTEnu15oS5E2n16xvSvD/k6olqP/9N0A" crossorigin="anonymous">
+<link href="~/css/log.css" rel="stylesheet" />
+</head> 
