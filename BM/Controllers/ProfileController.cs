@@ -177,6 +177,9 @@ namespace BM.Controllers
         }
 
         [HttpPost]
+
+
+
         public IActionResult Upload(string imagedescription, IFormFile image)
         {
             int userId = (int)HttpContext.Session.GetInt32("UserId");
@@ -214,6 +217,7 @@ namespace BM.Controllers
             _context.SaveChanges();
             TempData["Success"] = "Image Saved successfully.";
 
+
             return Redirect(Request.GetTypedHeaders().Referer.ToString());
         }
         //public async Task SendEmailAsync(string email, string subject, string message)
@@ -230,6 +234,84 @@ namespace BM.Controllers
 
         //    await _smtpClient.SendMailAsync(mailMessage);
         //}
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(string imagedescription, IFormFile image)
+        {
+           
+            int userId = (int)HttpContext.Session.GetInt32("UserId");
+
+          
+            var userImage = await _context.UserImages
+                .FirstOrDefaultAsync(img => img.UserId == userId && img.IsActive);
+
+            if (userImage == null)
+            {
+                return NotFound(new { message = "User image not found." });
+            }
+
+            
+            if (image != null && image.Length > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(image.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return BadRequest(new { message = "Invalid file type. Only images are allowed." });
+                }
+
+                if (image.Length > 5 * 1024 * 1024) // Limit file size to 5 MB
+                {
+                    return BadRequest(new { message = "File size exceeds limit. Maximum allowed size is 5 MB." });
+                }
+
+                
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                
+                var uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+                var filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                
+                var oldImagePath = Path.Combine(uploadFolder, Path.GetFileName(userImage.Url));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+
+                // Save the new image
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                
+                userImage.ImageDescription = imagedescription;
+                userImage.Url = "/images/" + uniqueFileName; 
+            }
+            else
+            {
+                userImage.ImageDescription = imagedescription;
+            }
+
+           
+            _context.UserImages.Update(userImage);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Profile updated successfully.";
+            return Redirect(Request.GetTypedHeaders().Referer.ToString());
+        }
+
+
+
 
 
         public IActionResult VerifyEmail()
@@ -449,6 +531,29 @@ namespace BM.Controllers
         public IActionResult ResetPasswordConfirmation()
         {
             return View();
+        }
+
+        public IActionResult Notifications(int? id)
+        {
+            if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            var notifications = _context.Notifications
+                 .Include(x => x.NotificationStatus)
+                 .Include(x => x.NotificationType)
+                .Where(n => n.UserId == userId.Value)
+                .ToList();
+
+            return View(notifications);
         }
 
 
