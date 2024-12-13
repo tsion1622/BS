@@ -49,6 +49,9 @@ public partial class Room
     public virtual ICollection<RoomProperty> RoomProperties { get; set; } = new List<RoomProperty>();
 
     [InverseProperty("Room")]
+    public virtual ICollection<RoomRentalRequest> RoomRentalRequests { get; set; } = new List<RoomRentalRequest>();
+
+    [InverseProperty("Room")]
     public virtual ICollection<RoomRental> RoomRentals { get; set; } = new List<RoomRental>();
 
     [ForeignKey("RoomStatusId")]
