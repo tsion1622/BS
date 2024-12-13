@@ -35,7 +35,7 @@ namespace BM.Controllers
                 return NotFound();
             }
 
-            // Retrieve the building along with floors and rooms
+           
             var building = await _context.Buildings
                                           .Include(b => b.Floors)
                                               .ThenInclude(f => f.Rooms)
@@ -46,34 +46,99 @@ namespace BM.Controllers
                 return NotFound();
             }
 
-            // If a floorId is provided, find the specific floor and its rooms
+           
             if (floorId.HasValue)
             {
                 var selectedFloor = building.Floors.FirstOrDefault(f => f.Id == floorId.Value);
                 if (selectedFloor != null)
                 {
-                    // Assign the selected floor's rooms to a view model 
-                    // or pass them directly to the view
-                    building.Floors = new List<Floor> { selectedFloor }; // Only include the selected floor
+                   
+                    building.Floors = new List<Floor> { selectedFloor }; 
                 }
             }
 
             return View(building);
         }
-        
-        
-            [HttpGet]
-            public async Task<IActionResult> GetRooms(int floorId)
-            {
-                var rooms = await _context.Rooms
-                    .Where(r => r.FloorId == floorId)
-                    .Select(r => new { id = r.Id, name = r.Name  }) // Ensure property names are lowercase
-                    .ToListAsync();
 
-                return Json(rooms);
+
+        [HttpGet]
+        public async Task<IActionResult> GetRooms(int floorId)
+        {
+            if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+                return RedirectToAction("Login", "Account");
             }
+
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            var rooms = await _context.Rooms
+                .Where(r => r.FloorId == floorId && !r.IsDeleted)
+                .Include(x => x.RoomStatus)
+                .Select(r => new
+                {
+                    roomId = r.Id,
+                    r.Name,
+                    RoomStatus = r.RoomStatus.Name,
+                    r.Width,
+                    r.Length,
+                    RentalRequestId = r.RoomRentalRequests
+                        .Where(x => x.IsActive && x.UserId == userId)
+                        .Select(x => x.Id)
+                        .FirstOrDefault() // Get the first active rental request ID
+                })
+                .ToListAsync();
+
+            return Json(rooms);
+        }
+        public IActionResult saverentalRequest(int RoomId , string Description)
+        {
+            if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            var roomRentalRequest = _context.RoomRentalRequests.FirstOrDefault(r => r.RoomId == RoomId && r.UserId == userId && r.IsDeleted==false);
+            if (roomRentalRequest == null) {
+
+                roomRentalRequest = new RoomRentalRequest
+                {
+
+                    RoomId = RoomId,
+                    Description = Description,
+                    UserId = userId.Value,
+                    RequestedDate = DateTime.Now,
+                    RequestStatusId = 1,
+                    IsActive = true,
+                    
+
+                };
+                _context.RoomRentalRequests.Add(roomRentalRequest);
+                _context.SaveChanges();
+                TempData["success"] = " Request saved!";
+  
+            }
+            else
+            {
+                TempData["Info"] = "Exists";
+                
+            }
+
+            return Redirect(Request.GetTypedHeaders().Referer.ToString());
+        }
+
+        public async Task<IActionResult> Deleterentalrequest(int id)
+        {
+            var roomRentalRequest = await _context.RoomRentalRequests.FirstOrDefaultAsync(x=>x.Id == id);
+            if (roomRentalRequest == null ) return NotFound();
+            roomRentalRequest.IsActive = false;
+            roomRentalRequest.IsDeleted = true;
+            _context.RoomRentalRequests.Update(roomRentalRequest);
+            await _context.SaveChangesAsync();
+            return Ok();
+
         }
     }
+}
 
 
 
