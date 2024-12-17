@@ -411,8 +411,21 @@ namespace BM.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteShopLocation(int Id)
+        {
+            var location = await _context.ShopLocations.FindAsync(Id);
+            //var shopItem = await _context.ShopItems.Where();
+            if (location == null) return NotFound();
+            location.IsActive = false;
+            location.IsDeleted = true;
+            _context.ShopLocations.Update(location);
+            await _context.SaveChangesAsync();
 
-   
+            return Ok();
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> EditItemEntry(int Id, int Quantity, float Price)
         {
@@ -465,7 +478,7 @@ namespace BM.Controllers
         }
 
         
- public async Task<IActionResult> DeleteItemEntryVaration(int Id)
+      public async Task<IActionResult> DeleteItemEntryVaration(int Id)
         {
             var itementryvaration = await _context.ItemEntryVarations.FindAsync(Id);
             if (itementryvaration == null) return NotFound();
