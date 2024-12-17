@@ -195,5 +195,140 @@ namespace BM.Controllers
         {
             return _context.Buildings.Any(e => e.Id == id);
         }
+        
+        public IActionResult Tenants(int? id)
+        {
+            var tenant = _context.Tenants
+                .Include(x => x.Building)
+                //.Include(x => x.Floors).ThenInclude(x => x.Rooms)
+                //.Include(x => x.City)
+                .Include(x => x.TenantType)
+                .Where(x => x.BuildingId == id);
+            //.FirstOrDefault(x => x.Id == id);
+
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
+
+
+            //var building = _context.Buildings
+            //    .Include(x => x.BuildingType)
+            //    .Include(x => x.Floors).ThenInclude(x => x.Rooms)
+            //    .Include(x => x.City)
+            //    .Include(x => x.Tenants).ThenInclude(x => x.TenantType)
+            //    .FirstOrDefault(x => x.Id == id); 
+
+            //if (building == null)
+            //{
+            //    return NotFound();
+            //}
+
+
+            //int? userId = HttpContext.Session.GetInt32("UserId");
+            //if (!userId.HasValue)
+            //{
+            //    return RedirectToAction("Login", "Account");
+            //}
+
+
+            //var approvedRoomRentalRequests = _context.RoomRentalRequests
+            //    .Where(rr => rr.UserId == userId && rr.RequestStatusId == 2)
+            //    .Select(rr => rr.RoomId);
+
+
+            //var rooms = _context.Rooms
+            //    .Include(x => x.Floor).ThenInclude(x => x.Building).ThenInclude(x => x.City)
+            //    .Where(x => x.IsActive && approvedRoomRentalRequests.Contains(x.Id))
+            //    .Select(s => new
+            //    {
+            //        s.Id,
+            //        Name = $"{s.Name}/{s.Floor.Name}/{s.Floor.Building.Name}/{s.Floor.Building.City.Name}"
+            //    }).ToList(); 
+
+            ViewData["BuildingId"] = new SelectList(_context.Buildings, "Id", "Name");
+            ViewData["TenantTypeId"] = new SelectList(_context.TenantTypes, "Id", "Name");
+
+            return View(tenant); 
+        }
+
+        public IActionResult Tenant(int? id)
+        {
+            var tenant = _context.Tenants
+                .Include(x => x.Building)
+                .Include(x => x.RoomRentals).ThenInclude(x=>x.BusinessArea)
+                 .Include(x => x.RoomRentals).ThenInclude(x => x.Room)
+                 // .Include(x => x.RoomRentals).ThenInclude(x => x.Tenant)
+                //.Include(x => x.Floors).ThenInclude(x => x.Rooms)
+                //.Include(x => x.City)
+                .Include(x => x.TenantType)
+                .FirstOrDefault(m => m.Id == id);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Name");
+            ViewData["BusinessAreaId"] = new SelectList(_context.BusinessAreas, "Id", "Name");
+          
+            return View(tenant);
+        }
+
+        
+        [HttpPost]
+        
+        public async Task<IActionResult> AddTenant(int BuildingId, int TenantTypeId, string Name, int Tin, string Description,string Contact)
+        {
+            if (BuildingId <= 0)
+            {
+                return BadRequest("Invalid building ID.");
+            }
+
+          
+
+
+            var tenant = new Tenant
+            {
+                BuildingId = BuildingId,
+                TenantTypeId = TenantTypeId,
+                Name = Name,
+                Tin = Tin,
+                Description = Description,
+                Contact = Contact,
+                IsActive = true
+            };
+
+            _context.Tenants.Add(tenant);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        [HttpPost]
+           
+        public async Task<IActionResult> AddRoomRentals(int TenantId, int RoomId, float TotalPrice, int BusinessAreaId)
+        {
+            if (TenantId <= 0)
+            {
+                return BadRequest("Invalid Tenant ID.");
+            }
+
+
+
+
+            var roomRental = new RoomRental
+            {
+                TenantId = TenantId,
+                RoomId = RoomId,
+                TotalPrice = TotalPrice,
+                BusinessAreaId = BusinessAreaId,
+                StartDate = DateTime.Now,
+                IsActive = true
+               
+            };
+
+            _context.RoomRentals.Add(roomRental);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
     }
+
 }
