@@ -35,15 +35,7 @@
        
     </dl>
 </div>
-@* <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div> *@
 
-
-@* <a asp-action="Tenant" asp-controller="Buildings" asp-route-id="@Model.Id">
-Go To Tenantes
-</a> *@
 
 <div class="modal fade" id="modal_addRoomRental" tabindex="-1" aria-labelledby="modal_addRoomRental" aria-hidden="true">
     <div class="modal-dialog">
@@ -63,10 +55,7 @@ Go To Tenantes
                     <label for="RoomId">@Html.Raw(Localization.Get("Rooms"))</label>
                     <select name="RoomId" id="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
                 </div>
-               @*  <div class="form-group">
-                    <label for="TenantId">@Html.Raw(Localization.Get("Tenants"))</label>
-                    <select name="TenantId" id="TenantId" class="form-control" asp-items="ViewBag.TenantId"></select>
-                </div> *@
+              
               
                 <div class="form-group">
                     <label for="BusinessAreaId">@Html.Raw(Localization.Get("BusinessAreas"))</label>
@@ -76,11 +65,7 @@ Go To Tenantes
                     <label for="TotalPrice">@Html.Raw(Localization.Get("TotalPrice"))</label>
                     <input type="text" id="TotalPrice" name="TotalPrice" class="form-control" />
                 </div>
-               @*  <div class="form-group">
-                    <label for="Tin">@Html.Raw(Localization.Get("Tin"))</label>
-                    <input type="text" id="Tin" name="Tin" class="form-control" />
-                </div> *@
-               
+             
             </div>
 
             <div class="modal-footer">
@@ -94,11 +79,11 @@ Go To Tenantes
         </div>
     </div>
 </div>
-<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addRoomRental">
+@* <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addRoomRental">
     + AddRoomRental
-</button>
+</button> *@
 
-<div class="card">
+@* <div class="card">
     <div class="header">
         <h5 class="card-title">Room Rental</h5> 
     </div>
@@ -106,8 +91,7 @@ Go To Tenantes
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
-                   @*  @if (Model?.Tenants != null && Model.Tenants.Any()) 
-                    { *@
+                 
                         @foreach (var te in Model.RoomRentals)
                         {
                             <div class="col-md-4">
@@ -121,28 +105,20 @@ Go To Tenantes
                                         <p>@te.StartDate</p>
                                     </div>
                                 <div class="card-footer">
-                                   @*  <a asp-action="Tenant" asp-controller="Buildings" asp-route-id="@te.Id">
-                                        Go To Tenantes
-                                    </a> *@
+                                  
                                 </div>
                                 </div>
                             </div>
                         }
-                   @*  }
-                    else
-                    {
-                        <div class="col-md-12">
-                            <p>No tenants found.</p> 
-                        </div>
-                    } *@
+                 
                 </div>
             </div>
         </div>
     </div>
-    <div class="card-footer">m,
+    <div class="card-footer">
      
     </div>
-</div>
+</div> *@
 
 @section Scripts {
     <script>
