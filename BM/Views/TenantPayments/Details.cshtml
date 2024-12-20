@@ -2,9 +2,9 @@
 @using Insya.Localization
 @using Microsoft.Extensions.Options
 
-@{
+@* @{
     ViewData["Title"] = "Details";
-}
+} *@
 
 <h1>Details</h1>
 
@@ -36,89 +36,106 @@
     </dl>
 </div>
 
+<div class="card">
+    <div class="header">
+        <h5 class="card-title">Room Rental</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
 
-<div class="modal fade" id="modal_addRoomRental" tabindex="-1" aria-labelledby="modal_addRoomRental" aria-hidden="true">
+                    @foreach (var te in Model.RoomRentals)
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <p>@te.Tenant?.Name</p>
+                                <div class="card-body">
+                                    <p>@te.BusinessArea.Name</p>
+                                    <p>@te.Room?.Name</p>
+                                    <p>@te.TotalPrice</p>
+                                    <p>@te.IsActive</p>
+                                    <p>@te.StartDate</p>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addPayment" onclick="setRoomRentalId('@te.Id')">
+                                        + AddPayment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        foreach ( var payment in te.RoomRentalPayments)
+                        {
+                            <p>@payment.PaymentType.Name</p>
+                            <p>@payment.PaymentMode?.Name</p>
+                            <p>@payment.TotalAmount</p>
+                            <p>@payment.InvoiceNumber</p>
+                            <p>@payment.PaidDate</p>
+
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_addPayment" tabindex="-1" aria-labelledby="modal_addPayment" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="RoomRentalLabel">
+                <h1 class="modal-title fs-5" id="PaymentLabel">
                     <i class="icon-plus2 mr-1"></i>
-                    @Html.Raw(Localization.Get("Add Tenantes"))
+                    @Html.Raw(Localization.Get("Add Payment"))
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @*  <div class="form-group">
+                    <label for="RoomRentalId">@Html.Raw(Localization.Get("RoomRentalId"))</label>
+                    <select name="RoomRentalId" id="RoomRentalId" class="form-control" asp-items="ViewBag.RoomRentalId"></select>
+               
+                </div> *@
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="RoomRentalId" name="RoomRentalId" value="" />
+                    </div>
                 <div class="form-group">
-                    <input type="hidden" id="TenantId" name="TenantId" value="@Model.Id" />
+                    <label for="PaymentTypeId">@Html.Raw(Localization.Get("Payment Type"))</label>
+                    <select name="PaymentTypeId" id="PaymentTypeId" class="form-control" asp-items="ViewBag.PaymentTypeId"></select>
                 </div>
                 <div class="form-group">
-                    <label for="RoomId">@Html.Raw(Localization.Get("Rooms"))</label>
-                    <select name="RoomId" id="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
-                </div>
-              
-              
+                    <label for="PaymentModeId">@Html.Raw(Localization.Get("Payment Mode"))</label>
+                    <select name="PaymentModeId" id="PaymentModeId" class="form-control" asp-items="ViewBag.PaymentModeId"></select>
+                </div> 
                 <div class="form-group">
-                    <label for="BusinessAreaId">@Html.Raw(Localization.Get("BusinessAreas"))</label>
-                    <select name="BusinessAreaId" id="BusinessAreaId" class="form-control" asp-items="ViewBag.BusinessAreaId"></select>
+                    <label for="TotalAmount">@Html.Raw(Localization.Get("Total Amount"))</label>
+                    <input type="text" id="TotalAmount" name="TotalAmount" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="TotalPrice">@Html.Raw(Localization.Get("TotalPrice"))</label>
-                    <input type="text" id="TotalPrice" name="TotalPrice" class="form-control" />
+                    <label for="InvoiceNumber">@Html.Raw(Localization.Get("Invoice Number"))</label>
+                    <input type="text" id="InvoiceNumber" name="InvoiceNumber" class="form-control" />
                 </div>
-             
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-link" data-bs-dismiss="modal">
                     <i class="icon-cross2 font-size-base mr-1"></i> Close
                 </button>
-                <button class="btn bg-primary" onclick="SaveRoomRental()">
+                <button class="btn bg-primary" onclick="SavePayment()">
                     <i class="icon-checkmark3 font-size-base mr-1"></i> Save
                 </button>
             </div>
         </div>
     </div>
 </div>
-@* <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addRoomRental">
-    + AddRoomRental
-</button> *@
-
-@* <div class="card">
-    <div class="header">
-        <h5 class="card-title">Room Rental</h5> 
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="row">
-                 
-                        @foreach (var te in Model.RoomRentals)
-                        {
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <p>@te.Tenant?.Name</p> 
-                                    <div class="card-body">
-                                        <p>@te.BusinessArea.Name</p> 
-                                        <p>@te.Room?.Name</p> 
-                                        <p>@te.TotalPrice</p>
-                                        <p>@te.IsActive</p>
-                                        <p>@te.StartDate</p>
-                                    </div>
-                                <div class="card-footer">
-                                  
-                                </div>
-                                </div>
-                            </div>
-                        }
-                 
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card-footer">
-     
-    </div>
-</div> *@
+</div>
 
 @section Scripts {
     <script>
@@ -148,5 +165,37 @@
                 }
             });
         }
+
+        function setRoomRentalId(id) {
+            $('#RoomRentalId').val(id);
+        }
+
+        function SavePayment() {
+            let roomRentalId = $('#RoomRentalId').val();
+            let paymentTypeId = $('#PaymentTypeId').val();
+            let paymentModeId = $('#PaymentModeId').val();
+            let totalAmount = $('#TotalAmount').val();
+            let invoiceNumber = $('#InvoiceNumber').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/TenantPayments/AddPayment',
+                data: {
+                    'RoomRentalId': roomRentalId,
+                    'PaymentTypeId': paymentTypeId,
+                    'PaymentModeId': paymentModeId,
+                    'TotalAmount':   totalAmount,
+                    'InvoiceNumber': invoiceNumber
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function () {
+                    alert('Error adding payment.');
+                }
+            });
+        }
+    
+    
     </script>
 }
