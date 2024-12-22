@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
+
 namespace BM.Controllers
 {
 
@@ -66,8 +67,10 @@ namespace BM.Controllers
                 .Include(x => x.TenantType)
                .Include(x => x.RoomRentals).ThenInclude(x => x.RoomRentalPayments).ThenInclude(x => x.PaymentType)
                 .Include(x => x.RoomRentals).ThenInclude(x => x.RoomRentalPayments).ThenInclude(x => x.PaymentMode)
+                 .Include(x => x.RoomRentals).ThenInclude(x => x.RoomRentalPayments).ThenInclude(x => x.RoomRentalPaymentDetails).ThenInclude(x => x.Month)
+                .Include(x => x.RoomRentals).ThenInclude(x => x.RoomRentalPayments).ThenInclude(x => x.RoomRentalPaymentDetails).ThenInclude(x => x.Year)
 
-               .FirstOrDefault(m => m.Id == id);
+                 .FirstOrDefault(m => m.Id == id);
 
             if (tenant == null)
             {
@@ -100,9 +103,19 @@ namespace BM.Controllers
            // ViewBag.RoomRentalId = new SelectList(_context.RoomRentals, "Id", "Name");
             ViewBag.PaymentTypeId = new SelectList(_context.PaymentTypes, "Id", "Name");
             ViewBag.PaymentModeId = new SelectList(_context.PaymentModes, "Id", "Name");
-          
+            ViewBag.MonthId = new SelectList(_context.Months, "Id", "Name");
+            ViewBag.YearId = new SelectList(_context.Years, "Id", "Name");
             return View(tenant);
         }
+
+        public IActionResult Payments()
+        {
+            return View();
+        }
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> AddPayment(int RoomRentalId, int PaymentTypeId, int PaymentModeId, float TotalAmount, string InvoiceNumber)
         {
@@ -128,7 +141,34 @@ namespace BM.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddRoomRentalPayment(int RoomRentalPaymentId, int MonthId, int YearId, float TotalAmount)
+        {
+           
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return BadRequest("User must be logged in.");
+            }
 
+            
+            var roomRentalPaymentDetails = new RoomRentalPaymentDetail
+            {
+                RoomRentalPaymentId = RoomRentalPaymentId,
+                MonthId = MonthId,
+                YearId = YearId,
+                TotalAmount = TotalAmount,
+                AccceptedBy = userId.Value,  
+                Date = DateTime.Now,
+                IsActive = true,
+            };
+
+            _context.RoomRentalPaymentDetails.Add(roomRentalPaymentDetails);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+  
     }
 
 }
