@@ -6,84 +6,161 @@
     ViewData["Title"] = "Details";
 } *@
 
-<h1>Details</h1>
 
-<div>
-    <h4>Building</h4>
+<div class="container mt-5">
+    <h4 class="text-center mb-4">Rented Rooms Overview</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-       
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-       
-       
-    </dl>
-</div>
 
-<div class="card">
-    <div class="header">
-        <h5 class="card-title">Room Rental</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="row">
+    <!-- Room Rental Overview Section -->
+    <div class="row">
+        @foreach (var rental in Model.RoomRentals)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card border-primary shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">@rental.Tenant?.Name</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Business Area:</strong> @rental.BusinessArea.Name</li>
+                            <li><strong>Room:</strong> @rental.Room?.Name</li>
+                            <li><strong>Total Price:</strong> @rental.TotalPrice</li>
+                            <li><strong>Status:</strong> @rental.IsActive</li>
+                            <li><strong>Start Date:</strong> @rental.StartDate</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Button to Add Payment for the Room -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addPayment_@rental.Id">
+                            <i class="fas fa-plus"></i> Add Payment
+                        </button>
+                    </div>
+                </div>
 
-                    @foreach (var te in Model.RoomRentals)
+                <!-- Payments for the Room -->
+                <div class="accordion mt-2" id="paymentDetailsAccordion_@rental.Id">
+                    @foreach (var payment in rental.RoomRentalPayments) // Assuming 'Payments' is the list of payments related to this rental
                     {
-                        <div class="col-md-4">
-                            <div class="card">
-                                <p>@te.Tenant?.Name</p>
-                                <div class="card-body">
-                                    <p>@te.BusinessArea.Name</p>
-                                    <p>@te.Room?.Name</p>
-                                    <p>@te.TotalPrice</p>
-                                    <p>@te.IsActive</p>
-                                    <p>@te.StartDate</p>
-                                </div>
-                                <div class="card-footer">
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addPayment" onclick="setRoomRentalId('@te.Id')">
-                                        + AddPayment
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading_payment_@payment.Id">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_payment_@payment.Id" aria-expanded="true" aria-controls="collapse_payment_@payment.Id">
+                                    <i class="fas fa-file-invoice"></i> Payment Type: @payment.PaymentType.Name
+                                </button>
+                            </h2>
+                            <div id="collapse_payment_@payment.Id" class="accordion-collapse collapse" aria-labelledby="heading_payment_@payment.Id" data-bs-parent="#paymentDetailsAccordion_@rental.Id">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><strong>Total Amount:</strong> @payment.TotalAmount</li>
+                                        <li><strong>Invoice Number:</strong> @payment.InvoiceNumber</li>
+                                        <li><strong>Paid Date:</strong> @payment.PaidDate</li>
+                                        <li><strong>Status:</strong> <span class="badge bg-success">@* @payment.Status *@</span></li> <!-- Status as badge -->
+                                    </ul>
+
+                                    <!-- Button to Add Payment Detail -->
+                                    <button type="button" class="btn btn-info mb-2" data-bs-toggle="modal" data-bs-target="#modal_addPaymentDetail_@payment.Id">
+                                        <i class="fas fa-plus-circle"></i> Add Payment Detail
                                     </button>
+
+                                    <!-- Payment Detail Entries -->
+                                    <h6 class="text-muted mt-2">Payment Details:</h6>
+                                    <div class="row">
+                                        @foreach (var detailPay in payment.RoomRentalPaymentDetails)
+                                        {
+                                            <div class="col-12 mb-2">
+                                                <div class="card border-warning">
+                                                    <div class="card-body">
+                                                        <strong>Month:</strong> @detailPay.Month.Name <br />
+                                                        <strong>Year:</strong> @detailPay.Year?.Name <br />
+                                                        <strong>Total Amount:</strong> @detailPay.TotalAmount <br />
+                                                        <strong>Accepted By:</strong> @* @detailPay.AcceptedBy *@ <br />
+                                                        <strong>Date:</strong> @detailPay.Date <br />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        foreach ( var payment in te.RoomRentalPayments)
-                        {
-                            <p>@payment.PaymentType.Name</p>
-                            <p>@payment.PaymentMode?.Name</p>
-                            <p>@payment.TotalAmount</p>
-                            <p>@payment.InvoiceNumber</p>
-                            <p>@payment.PaidDate</p>
 
-                        }
+                        <!-- Modal for Adding Payment Details -->
+                        <div class="modal fade" id="modal_addPaymentDetail_@payment.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalLabel">Add Payment Detail for @payment.PaymentType.Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Form for Adding Payment Details -->
+                                        <form>
+                                            <div class="mb-3">
+                                                <label for="month" class="form-label">Month</label>
+                                                <input type="text" class="form-control" id="month" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="year" class="form-label">Year</label>
+                                                <input type="text" class="form-control" id="year" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="amount" class="form-label">Total Amount</label>
+                                                <input type="number" class="form-control" id="amount" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="acceptedBy" class="form-label">Accepted By</label>
+                                                <input type="text" class="form-control" id="acceptedBy" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="date" class="form-label">Date</label>
+                                                <input type="date" class="form-control" id="date" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Add Payment Detail</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     }
+                </div>
 
+                <!-- Modal for Adding Payment -->
+                <div class="modal fade" id="modal_addPayment_@rental.Id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Add Payment for @rental.Room?.Name</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form for Adding Payment -->
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="paymentType" class="form-label">Payment Type</label>
+                                        <input type="text" class="form-control" id="paymentType" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="totalAmount" class="form-label">Total Amount</label>
+                                        <input type="number" class="form-control" id="totalAmount" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="invoiceNumber" class="form-label">Invoice Number</label>
+                                        <input type="text" class="form-control" id="invoiceNumber" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="paidDate" class="form-label">Paid Date</label>
+                                        <input type="date" class="form-control" id="paidDate" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Add Payment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="card-footer">
-        
-
+        }
     </div>
 </div>
+
 
 
 <div class="modal fade" id="modal_addPayment" tabindex="-1" aria-labelledby="modal_addPayment" aria-hidden="true">
@@ -136,10 +213,89 @@
     </div>
 </div>
 </div>
+<div class="modal fade" id="modal_addRoomRentalPayment" tabindex="-1" aria-labelledby="modal_addRoomRentalPayment" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="RoomRentalPaymentLabel">
+                    <i class="icon-plus2 mr-1"></i>
+                    @Html.Raw(Localization.Get("Add Room Rental Payment"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="RoomRentalPaymentId" name="RoomRentalPaymentId" value="" />
+              
+                <div class="form-group">
+                    <label for="MonthId">@Html.Raw(Localization.Get("Month"))</label>
+                   
+                    <select name="MonthId" id="MonthId" class="form-control" asp-items="ViewBag.MonthId"></select>
+
+
+                </div>
+                <div class="form-group">
+                    <label for="YearId">@Html.Raw(Localization.Get("Year"))</label>
+                    
+                    <select name="YearId" id="YearId" class="form-control" asp-items="ViewBag.YearId"></select>
+
+                </div>
+                <div class="form-group">
+                    <label for="TotalAmount">@Html.Raw(Localization.Get("Total Amount"))</label>
+                    <input type="text" id="PaymentTotalAmount" name="TotalAmount" class="form-control" />
+                </div>
+              
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveRoomRentalPayment()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script>
-                    
+        function setRoomRentalPaymentDetailId(id) {
+            $('#RoomRentalPaymentId').val(id);
+        }
+
+        function SaveRoomRentalPayment() {
+            let roomRentalPaymentId = $('#RoomRentalPaymentId').val();
+            let monthId = $('#MonthId').val();
+            let yearId = $('#YearId').val();
+            let totalAmountInput = $('#PaymentTotalAmount').val();
+
+            let totalAmount = parseFloat(totalAmountInput);
+
+            alert(totalAmountInput);
+            if (isNaN(totalAmount)) {
+                alert('Please enter a valid total amount.');
+                return;
+            }
+            alert(totalAmount);
+
+            $.ajax({
+                type: 'POST',
+                url: '/TenantPayments/AddRoomRentalPayment',
+                data: {
+                    'RoomRentalPaymentId': roomRentalPaymentId,
+                    'MonthId': monthId,
+                    'YearId': yearId,
+                    'TotalAmount': totalAmount
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error adding room rental payment: ' + errorThrown);
+                }
+            });
+        }
         function SaveRoomRental() {
             let tenantId = $('#TenantId').val();
             let roomId = $('#RoomId').val();
