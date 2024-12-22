@@ -1,4 +1,6 @@
 ﻿@model BM.Models.Building
+@using Insya.Localization
+@using Microsoft.Extensions.Options
 
 @{
     ViewData["Title"] = "Details";
@@ -94,3 +96,42 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<div class="modal fade" id="modal_addTenante" tabindex="-1" aria-labelledby="modal_addTenante" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ShopTenanteLabel">
+                    <i class="icon-plus2 mr-1"></i>
+                    @Html.Raw(Localization.Get("Add Shop Item"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" id="ShopId" name="ShopId" value="@Model.Id" />
+                </div>
+                <div class="form-group">
+                    <label for="ItemId">@Html.Raw(Localization.Get("Select Item"))</label>
+                    <select name="ItemId" id="ItemId" class="form-control" asp-items="ViewBag.ItemId"></select>
+                </div>
+                <div class="form-group">
+                    <label for="Balance">@Html.Raw(Localization.Get("Balance"))</label>
+                    <input type="text" id="Balance" name="Balance" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveShopItem()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@* <a asp-action="Index" asp-controller="BuildingTenants" asp-route-id="@Model.Id">
+Go To Tenantes
+</a>
+ *@
