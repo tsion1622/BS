@@ -1,5 +1,4 @@
 ﻿ @model IEnumerable<BM.Models.Tenant> 
-@* @model BM.Models.Building *@
 @using Insya.Localization
 @using Microsoft.Extensions.Options
 
@@ -23,113 +22,148 @@
 
 <div class="modal fade" id="modal_addTenante" tabindex="-1" aria-labelledby="modal_addTenante" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="ShopTenanteLabel">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="ShopTenanteLabel">
                     <i class="icon-plus2 mr-1"></i>
                     @Html.Raw(Localization.Get("Add Tenantes"))
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @* <div class="form-group">
-                    <input type="hidden" id="ShopId" name="ShopId" value="@Model.Id" /> 
-                </div> *@
-                <div class="form-group">
-                    <label for="BuildingId">@Html.Raw(Localization.Get("buildings"))</label>
-                    <select name="BuildingId" id="BuildingId" class="form-control" asp-items="ViewBag.BuildingId"></select>
+                <div class="form-group mb-3">
+                    <label for="BuildingId" class="form-label">@Html.Raw(Localization.Get("buildings"))</label>
+                    <select name="BuildingId" id="BuildingId" class="form-select" asp-items="ViewBag.BuildingId"></select>
                 </div>
-                <div class="form-group">
-                    <label for="TenantTypeId">@Html.Raw(Localization.Get("tenanteTypes"))</label>
-                    <select name="TenantTypeId" id="TenantTypeId" class="form-control" asp-items="ViewBag.TenantTypeId"></select>
+                <div class="form-group mb-3">
+                    <label for="TenantTypeId" class="form-label">@Html.Raw(Localization.Get("tenanteTypes"))</label>
+                    <select name="TenantTypeId" id="TenantTypeId" class="form-select" asp-items="ViewBag.TenantTypeId"></select>
                 </div>
-                <div class="form-group">
-                    <label for="Name">@Html.Raw(Localization.Get("Name"))</label>
+                <div class="form-group mb-3">
+                    <label for="Name" class="form-label">@Html.Raw(Localization.Get("Name"))</label>
                     <input type="text" id="Name" name="Name" class="form-control" />
                 </div>
-                <div class="form-group">
-                    <label for="Tin">@Html.Raw(Localization.Get("Tin"))</label>
+                <div class="form-group mb-3">
+                    <label for="Tin" class="form-label">@Html.Raw(Localization.Get("Tin"))</label>
                     <input type="text" id="Tin" name="Tin" class="form-control" />
                 </div>
-                <div class="form-group">
-                    <label for="Description">@Html.Raw(Localization.Get("Description"))</label>
+                <div class="form-group mb-3">
+                    <label for="Description" class="form-label">@Html.Raw(Localization.Get("Description"))</label>
                     <input type="text" id="Description" name="Description" class="form-control" />
                 </div>
-                <div class="form-group">
-                    <label for="Contact">@Html.Raw(Localization.Get("Contact"))</label>
+                <div class="form-group mb-3">
+                    <label for="Contact" class="form-label">@Html.Raw(Localization.Get("Contact"))</label>
                     <input type="text" id="Contact" name="Contact" class="form-control" />
                 </div>
             </div>
-           
             <div class="modal-footer">
-                <button class="btn btn-link" data-bs-dismiss="modal">
-                    <i class="icon-cross2 font-size-base mr-1"></i> Close
-                </button>
-                <button class="btn bg-primary" onclick="SaveTenant()">
-                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
-                </button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary" onclick="SaveTenant()"><i class="icon-checkmark3 mr-1"></i> Save</button>
             </div>
         </div>
     </div>
 </div>
-  
-@* @if (approvedRoomRentalRequests != null && approvedRoomRentalRequests.Any())
-{
-    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_addTenante">
-        + Add Tenant
-    </button> *@
 
-    <div class="card">
-        <div class="header">
-            <h5 class="card-title">Tenants</h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
-                        @*  @if (Model?.Tenants != null && Model.Tenants.Any())
-                    { *@
-                        @foreach (var te in Model)
-                        {
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <p>@te.Building?.Name</p>
-                                    <div class="card-body">
-                                        <p>@te.Name</p>
-                                        <p>@te.TenantType?.Name</p>
-                                        <p>@te.Contact</p>
-                                        <p>@te.Description</p>
-                                        <p>@te.Tin</p>
-                                    </div>
-                                    <div class="card-footer">
-                                    <a asp-action="Details" asp-controller="TenantPayments" asp-route-id="@te.Id">
-                                            Go To payment
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        @*  }
-                    else
-                    {
-                    <div class="col-md-12">
-                    <p>No tenants found.</p>
-                    </div>
-                    } *@
+<div class="card custom-card">
+    <div class="header bg-gradient p-3">
+        <h5 class="card-title text-center custom-title mb-0">Tenants</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @foreach (var te in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card inner-card shadow-sm hover-shadow">
+                        <div class="card-header bg-light text-dark">
+                            <h6 class="mb-0">@te.Name</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Building:</strong> @te.Building?.Name</p>
+                            <p><strong>Type:</strong> @te.TenantType?.Name</p>
+                            <p><strong>Contact:</strong> @te.Contact</p>
+                            <p><strong>Description:</strong> @te.Description</p>
+                            <p><strong>TIN:</strong> @te.Tin</p>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Details" asp-controller="TenantPayments" asp-route-id="@te.Id" class="btn btn-info btn-sm" style="width: auto; border-radius: 3px;">
+                                Go To Payment
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card-footer">
-          
+            }
         </div>
     </div>
-
-
+    <div class="card-footer bg-light">
+      
+    </div>
+</div>
 
 
 
 @section Scripts {
+    <style>
+        .card-header {
+            border-bottom: 2px solid #007bff; 
+        }
+
+        .btn-primary {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3; 
+                transform: scale(1.02); 
+            }
+
+        .hover-shadow:hover {
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.2);
+        }
+
+        .custom-card {
+            background-color: #f5f5f5; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+        }
+
+        .header {
+            background: linear-gradient(90deg, rgba(70,130,180,1) 0%, rgba(100,149,237,1) 100%); 
+            color: #fff;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px; 
+        }
+
+        .inner-card {
+            border: 1px solid #e1e1e1; 
+            border-radius: 5px;
+            transition: transform 0.2s; 
+        }
+
+            .inner-card:hover {
+                transform: scale(1.02);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+            }
+
+       
+        .btn-danger {
+            background-color: #dc3545; 
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333; 
+            }
+
+        .custom-title {
+            text-align: center; 
+            font-size: 1.75rem; 
+            color: #2c3e50; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 0; 
+        }
+    </style>
     <script>
 
         function SaveTenant() {        
