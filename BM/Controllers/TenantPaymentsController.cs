@@ -99,8 +99,7 @@ namespace BM.Controllers
                     Name = $"{s.Name}/{s.Floor.Name}/{s.Floor.Building.Name}/{s.Floor.Building.City.Name}"
                 });
 
-            //RoomRentalId PaymentTypeId PaymentModeId
-           // ViewBag.RoomRentalId = new SelectList(_context.RoomRentals, "Id", "Name");
+          
             ViewBag.PaymentTypeId = new SelectList(_context.PaymentTypes, "Id", "Name");
             ViewBag.PaymentModeId = new SelectList(_context.PaymentModes, "Id", "Name");
             ViewBag.MonthId = new SelectList(_context.Months, "Id", "Name");
