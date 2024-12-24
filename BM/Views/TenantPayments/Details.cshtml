@@ -13,24 +13,25 @@
     <div class="row">
         @foreach (var rental in Model.RoomRentals)
         {
-            <div class="col-12 mb-5" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <!-- Card for Rented Room Info -->
-                <div class="card border-0 p-4">
-                    <h5 class="text-secondary" style="font-size: 1.5rem;">@rental.Tenant?.Name</h5>
-                    <ul class="list-unstyled">
-                        <li style="color: #555;"><strong>Business Area:</strong> @rental.BusinessArea.Name</li>
-                        <li style="color: #555;"><strong>Room:</strong> @rental.Room?.Name</li>
-                        <li style="color: #555;"><strong>Total Price:</strong> @rental.TotalPrice</li>
-                        <li style="color: #555;"><strong>Status:</strong> @rental.IsActive</li>
-                        <li style="color: #555;"><strong>Start Date:</strong> @rental.StartDate</li>
-                    </ul>
-                    <div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_addPayment" onclick="setRoomRentalId('@rental.Id')">
-                            <i class="fas fa-plus"></i> Add Payment
-                        </button>
-                    </div>
-                </div>
+            <div class="col-12 mb-5" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); position: relative;">
 
+                <div class="border-0 p-4" style="padding-top: 1rem;">
+                  
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_addPayment" onclick="setRoomRentalId('@rental.Id')" style="position: absolute; top: 1rem; right: 1rem;">
+                        <i class="fas fa-plus"></i> Add Payment
+                    </button>
+
+                    <h5 class="text-secondary" style="font-size: 1.5rem;">@rental.Tenant?.Name</h5>
+                    <ul class="list-unstyled d-flex flex-wrap justify-content-between mb-0" style="line-height: 1.5;">
+                        <li style="color: #555; width: 30%;"><strong>Business Area:</strong> @rental.BusinessArea.Name</li>
+                        <li style="color: #555; width: 30%;"><strong>Room:</strong> @rental.Room?.Name</li>
+                        <li style="color: #555; width: 30%;"><strong>Total Price:</strong> @rental.TotalPrice</li>
+                        <li style="color: #555; width: 30%;"><strong>Status:</strong> @rental.IsActive</li>
+                        <li style="color: #555; width: 30%;"><strong>Start Date:</strong> @rental.StartDate</li>
+                    </ul>
+                </div>
+           
+        
                 <h6 class="text-muted mt-3">Payment Info</h6>
 
                 @if (rental.RoomRentalPayments.Any())
@@ -59,8 +60,7 @@
                                         </button>
                                     </td>
                                 </tr>
-
-                                <!-- Payment Details Table -->
+ 
                                 <tr>
                                     <td colspan="5" class="p-0">
                                         <h6 class="text-muted">Payment Details:</h6>
