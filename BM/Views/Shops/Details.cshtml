@@ -2,9 +2,18 @@
 @using Insya.Localization
 @using Microsoft.Extensions.Options
 @{
-    int ItemCount = 1;
 
+    var shopLocation = Model.ShopLocations.FirstOrDefault(x => x.IsActive);
+    var shopLocationId = 0;
+    var location = "";
+    @if (shopLocation != null)
+    {
+        shopLocationId = shopLocation.Id;
+        var s = shopLocation.Room;
+        location = $"{s.Name}/{s.Floor.Name}/{s.Floor.Building.Name}/{s.Floor.Building.City.Name}";
+    }
 }
+
 
 <div class="container mt-5 mb-3">
     <div class="card shadow-lg" style="border-radius: 35px; overflow: hidden;">
@@ -18,17 +27,18 @@
                         Shop D
                     </h3>
                     <div class="float-end">
-                        <button type="button" class="btn btn-success" style="width: 150px; height: 50px; margin-left: 920px; margin-top: -90px; border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#modal_addShopItem">
+                       @*  <button type="button" class="btn btn-success" style="width: 150px; height: 50px; margin-left: 920px; margin-top: -120px; border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#modal_addShopLocation">
+                            + 
+                        </button> *@
+                        <button type="button" class="btn btn-success" style="width: 150px; height: 50px; margin-left: 920px; margin-top: -110px; border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#modal_addShopItem">
                             + Add ShopItem
                         </button>
-                        <div class="dropdown" style="margin-left: 1100px; margin-top: -80px">
+                        <div class="dropdown" style="margin-left: 1100px; margin-top: -90px">
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="fa fa-bars"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-                                </li>
+                                 <li><a onclick="removeShopLocation('@shopLocationId')" class="dropdown-item">Remove Location</a></li>
                                 <li>
                                     <a class="dropdown-item" asp-action="Index">Back to List</a>
                                 </li>
@@ -39,14 +49,30 @@
                                         {
                                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@Model.ShopItems.Count(x => !x.IsDeleted)</span>
                                         }
+                                       
                                     </button>
                                 </li>
                             </ul>
                         </div>
+                    
                     </div>
                     <p class="card-text">Shop Name: @Html.DisplayFor(modelItem => @Model.Name)</p>
                     <p class="card-text">Shop Description: @Html.DisplayFor(modelItem => @Model.Description)</p>
                     <p class="card-text"><strong>Business Area:</strong> @Html.DisplayFor(modelItem => @Model.BusinessArea.Name)</p>
+
+                    @if (!string.IsNullOrWhiteSpace(location))
+                    {
+                        <p class="card-text">Location: @Html.DisplayFor(modelItem => location)</p>
+                    }
+                    else
+                    {
+                        //style="width: 150px; height: 50px; margin-left: 920px; margin-top: -120px; border-radius: 25px;"
+                       
+                        <button type="button" class="btn btn-danger d-flex align-items-center" style="border-radius: 20px; padding: 5px 15px;" data-bs-toggle="modal" data-bs-target="#modal_addShopLocation">
+                            + <span class="fas fa-map-marker-alt" style="margin-right: 6px;"></span>
+                            
+                        </button>
+                    }
                 </div>
             </div>
         </div>
@@ -54,9 +80,9 @@
 </div>
 
 <div class="mb-3">
-    <input type="text" id="searchInput" class="form-control" style="width : 500px; margin-left :500px; border-radius :20px;"placeholder="Search for items..." />
+    <input type="text" id="searchInput" class="form-control" style="width : 500px; margin-left :600px; border-radius :20px;"placeholder="Search for items..." />
 </div>
-<div class="">
+@* <div class="">
 
     <div class="card-body">
         <div class="row">
@@ -69,16 +95,19 @@
 
     </div>
 
+</div> *@
+<div id="itemlistn">
+    <div class="row">
+    </div>
 </div>
-
-<nav aria-label="Page navigation example">
+<nav aria-label="Page navigation example " class="mt-3 float-end">
     <ul class="pagination" id="pagination">
         <li class="page-item">
             <a class="page-link" href="#" aria-label="Previous">
                 <span aria-hidden="true">«</span>
             </a>
         </li>
-        <!-- Page numbers will be dynamically generated here -->
+       
         <li class="page-item">
             <a class="page-link" href="#" aria-label="Next">
                 <span aria-hidden="true">»</span>
@@ -87,21 +116,12 @@
     </ul>
 </nav>
 
-<div id="itemlistn">
-    <div class="row">
-        <!-- Items will be dynamically populated here -->
-    </div>
-</div>
+
 
 
 @* @{
     ViewData["Title"] = "Details";
 } *@
-
-
-
-
-
 
 
 <div class="modal fade" id="modal_addShopItem" tabindex="-1" aria-labelledby="modal_addShopItem" aria-hidden="true">
@@ -139,6 +159,44 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal_addShopLocation" tabindex="-1" aria-labelledby="modal_addShopLocation" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ShopLocationLabel">
+                    <i class="icon-plus2 mr-1"></i>
+                    @Html.Raw(Localization.Get("Add Shop Location"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" id="ShopId" name="ShopId" value="@Model.Id" />
+                   
+                </div>
+                <div class="form-group">
+                    <label for="RoomId">@Html.Raw(Localization.Get("Select Location"))</label>
+                    <select name="RoomId" id="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
+                </div>
+                @*
+                <div class="form-group">
+                    <label for="Balance">@Html.Raw(Localization.Get("Balance"))</label>
+                    <input type="text" id="Balance" name="Balance" class="form-control" />
+                </div> *@
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveShopLocation()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <style>
     body {
         background-color: #f5f7fa;
@@ -163,21 +221,21 @@
             }
 
         .card-header {
-            background-color: transparent; /* Make the background transparent */
+            background-color: transparent; 
             position: relative;
-            z-index: 1; /* Ensure it appears above other elements */
+            z-index: 1; 
         }
 
         .card-title {
-            font-family: 'Montserrat', sans-serif; /* Modern font for titles */
+            font-family: 'Montserrat', sans-serif; 
             font-weight: 600;
-            font-size: 1.5rem; /* Increase font size */
-            color: #007bff; /* Change title color */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Light shadow for better visibility */
+            font-size: 1.5rem;
+            color: #007bff; 
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
         }
 
         .card-text {
-            color: #555; /* Dark grey for descriptions */
+            color: #555; 
         }
 
         .bg-primary-custom {
@@ -188,8 +246,8 @@
             font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #333; /* Dark color for a more elegant look */
-            padding: 10px 0; /* Padding for space around text */
+            color: #333; 
+            padding: 10px 0; 
         }
 
         .card-body {
@@ -199,80 +257,7 @@
    
      <script>
 
-        function draw(url, shopItemId, itemName) {
-             var data = `
-                      <div class="col-md-4 shop-item">
-
-                                                                <div class="container">
-                                        <section class="mx-auto " style="max-width: 23rem;">
-
-                                            <div class="card" style="border-radius :20px;">
-                                                <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                                   <img src="${url}" style="width : 350px; height : 250px; border-radius :20px;" class="img-fluid" />
-                                                    <a href="#!">
-                                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                                    </a>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h5 class="card-title font-weight-bold">
-                                                                        <a class="dropdown-item" href="/Shops/ItemDetail/${shopItemId}" style="color:blue;">
-                ${itemName}
-                                                        </a>
-                                                    </h5>
-                                                    <div class="dropdown float-end" style="margin-top :-50px;">
-                                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <span class="fa fa-bars"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu dropdown-menu-dark">
-                                                            <li>
-                                                                                        <a class="dropdown-item" href="/Shops/ItemDetail/${shopItemId}">
-                                                                    View Item
-                                                                </a>
-                                                            <li><a onclick="removeShopItem('${shopItemId}')" class="dropdown-item">remove Item</a></li>
-
-                                                        </ul>
-                                                    </div>
-                                                    <ul class="list-unstyled list-inline mb-0">
-                                                        <li class="list-inline-item me-0">
-                                                            <i class="fas fa-star text-warning fa-xs"> </i>
-                                                        </li>
-                                                        <li class="list-inline-item me-0">
-                                                            <i class="fas fa-star text-warning fa-xs"></i>
-                                                        </li>
-                                                        <li class="list-inline-item me-0">
-                                                            <i class="fas fa-star text-warning fa-xs"></i>
-                                                        </li>
-                                                        <li class="list-inline-item me-0">
-                                                            <i class="fas fa-star text-warning fa-xs"></i>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <i class="fas fa-star-half-alt text-warning fa-xs"></i>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <p class="text-muted">4.5 (413)</p>
-                                                        </li>
-                                                    </ul>
-                                                    </div>
-                                            </div>
-                                        </section>
-                                    </div>
-                                </div>
-             `;
-            $("#itemlist").append(data);
-            //return data;
-         }
-
-        $(document).ready(function () {
-         
-            load("");
-        });
-
-        $("#searchInput").on("change", function () {
-          //  alert("dd");
-            let itemname = $(this).val();
-           
-            load(itemname);
-         });
+     
 
         function load(itemName) {
             //let itemname = $("#searchInput").val();
@@ -303,37 +288,96 @@
             });
         }
 
+        function draw(url, shopItemId, itemName) {
+            var data = `
+                <div class="col-md-4 shop-item">
+                    <div class="container">
+                        <section class="mx-auto" style="max-width: 23rem;">
+                            <div class="card" style="border-radius: 20px; margin-top : 20px;">
+                                <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                    <img src="${url}" style="width: 350px; height: 250px; border-radius: 20px;" class="img-fluid" />
+                                    <a href="#!">
+                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title font-weight-bold">
+                                        <a class="dropdown-item" href="/Shops/ItemDetail/${shopItemId}" style="color: blue;">
+                                            ${itemName}
+                                        </a>
+                                    </h5>
+                                    <div class="dropdown float-end" style="margin-top: -50px;">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="fa fa-bars"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            <li>
+                                                <a class="dropdown-item" href="/Shops/ItemDetail/${shopItemId}">
+                                                    View Item
+                                                </a>
+                                            <li><a onclick="removeShopItem('${shopItemId}')" class="dropdown-item">Remove Item</a></li>
+                                        </ul>
+                                    </div>
+                                    <ul class="list-unstyled list-inline mb-0">
+                                        <li class="list-inline-item me-0">
+                                            <i class="fas fa-star text-warning fa-xs"></i>
+                                        </li>
+                                        <li class="list-inline-item me-0">
+                                            <i class="fas fa-star text-warning fa-xs"></i>
+                                        </li>
+                                        <li class="list-inline-item me-0">
+                                            <i class="fas fa-star text-warning fa-xs"></i>
+                                        </li>
+                                        <li class="list-inline-item me-0">
+                                            <i class="fas fa-star text-warning fa-xs"></i>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-star-half-alt text-warning fa-xs"></i>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <p class="text-muted">4.5 (413)</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            `;
+            $("#itemlistn .row").append(data);
+        }
 
         let currentPage = 1;
-        const pageSize = 5;
+        const pageSize = 6;
 
-        function loadItems(page) {
-            $("#itemlistn .row").empty(); // Clear previous items
-            let shopId = @Model.Id; // Ensure this is properly set by Razor syntax
+        function loadItems(page, itemName) {
+            $("#itemlistn .row").empty(); 
+            let shopId = @Model.Id; 
 
+           
             $.ajax({
                 type: 'POST',
-                url: '/Shops/pagenation', // Ensure this matches your controller method
+                url: '/Shops/LoadItems', 
                 data: {
                     'shopId': shopId,
                     'page': page,
-                    'pageSize': pageSize
+                    'pageSize': pageSize,
+                    'itemname': itemName
                 },
                 success: function (response) {
-                    // Check if response is valid
-                    if (response && response.items) {
+                    console.log('AJAX Success:', response); 
+                    if (response && response.items && response.items.length > 0) {
                         $(response.items).each(function (index, item) {
                             let shopItemId = item.id;
                             let itemName = item.itemName;
                             let url = item.url;
-                            // Ensure your draw function is defined
+                           
                             draw(url, shopItemId, itemName);
                         });
-                        // Setup pagination
                         setupPagination(response.totalItems);
                     } else {
-                        console.error('Invalid response format:', response);
-                        alert('No items returned.');
+                        console.error('No items returned:', response);
+                        alert('No items available.');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -347,50 +391,45 @@
             const totalPages = Math.ceil(totalItems / pageSize);
             let paginationHtml = '';
 
-            // Previous button
-            if (currentPage > 1) {
-                paginationHtml += `
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous" onclick="changePage(${currentPage - 1})">
-                            <span aria-hidden="true">«</span>
-                        </a>
-                    </li>`;
+            if (totalPages > 0) {
+                if (currentPage > 1) {
+                    paginationHtml += `<li class="page-item"><a class="page-link" href="#" aria-label="Previous" onclick="changePage(${currentPage - 1})"><span aria-hidden="true">«</span></a></li>`;
+                } else {
+                    paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>';
+                }
+
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+                }
+
+                if (currentPage < totalPages) {
+                    paginationHtml += `<li class="page-item"><a class="page-link" href="#" aria-label="Next" onclick="changePage(${currentPage + 1})"><span aria-hidden="true">»</span></a></li>`;
+                } else {
+                    paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>';
+                }
+
+                $('#pagination').html(paginationHtml);
             } else {
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>';
+                $('#pagination').html(''); 
             }
-
-            // Page numbers
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `
-                    <li class="page-item ${i === currentPage ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
-                    </li>`;
-            }
-
-            // Next button
-            if (currentPage < totalPages) {
-                paginationHtml += `
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next" onclick="changePage(${currentPage + 1})">
-                            <span aria-hidden="true">»</span>
-                        </a>
-                    </li>`;
-            } else {
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>';
-            }
-
-            $('#pagination').html(paginationHtml); // Render the pagination HTML
         }
 
         function changePage(page) {
-            currentPage = page; // Update current page
-            loadItems(currentPage); // Load items for the new page
+            currentPage = page; 
+            loadItems(currentPage,""); 
         }
 
-        // Initial load of items
-        $(document).ready(function () {
-            loadItems(currentPage);
+        $("#searchInput").on("change", function () {
+            
+            let itemname = $(this).val();
+
+            loadItems(currentPage, itemname);
+          
         });
+        $(document).ready(function () {
+            loadItems(currentPage,"");
+        });
+
 
 
 
@@ -416,6 +455,28 @@ function SaveShopItem() {
         }
     });
 }
+        function SaveShopLocation() {
+            let shopId = $('#ShopId').val();
+            let roomId = $('#RoomId').val();
+           
+
+            $.ajax({
+                type: 'POST',
+                url: '/Shops/AddShopLocation',
+                data: {
+                    'ShopId': shopId,
+                    'RoomId': roomId
+                   
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function () {
+                    alert('Error adding location.');
+                }
+            });
+        }
+
         function removeShopItem(id) {
             if (confirm('Are you sure you want to remove this Item?')) {
                 $.ajax({
@@ -431,6 +492,22 @@ function SaveShopItem() {
                 });
             }
         }
+       
+                 function removeShopLocation(id) {
+                    if (confirm('Are you sure you want to remove this location?')) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/Shops/DeleteShopLocation',
+                            data: { Id: id },
+                            success: function () {
+                                location.reload();
+                            },
+                            error: function () {
+                                alert('Error removing location.');
+                            }
+                        });
+                    }
+                }
 
 </script>
 }
