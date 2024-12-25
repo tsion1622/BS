@@ -59,6 +59,12 @@
                                             <i class="fas fa-plus-circle"></i> Add Payment Detail
                                         </button>
                                     </td>
+                                    <td>
+
+                                        <button class="btn btn-outline-primary me-2" onclick="setEditpayment('@payment.Id','@payment.InvoiceNumber','@payment.TotalAmount','@payment.PaymentModeId','@payment.PaymentTypeId')" data-bs-toggle="modal" data-bs-target="#modal_editPayment">EditPAYMENT</button>
+                                        <button class="btn btn-outline-danger me-2" onclick="removePayment('@payment.Id')">Remove</button>
+
+                                    </td>
                                 </tr>
  
                                 <tr>
@@ -123,11 +129,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @*  <div class="form-group">
-                <label for="RoomRentalId">@Html.Raw(Localization.Get("RoomRentalId"))</label>
-                <select name="RoomRentalId" id="RoomRentalId" class="form-control" asp-items="ViewBag.RoomRentalId"></select>
-
-                </div> *@
+               
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="hidden" id="RoomRentalId" name="RoomRentalId" value="" />
@@ -162,6 +164,8 @@
         </div>
     </div>
 </div>
+
+
 <div class="modal fade" id="modal_addRoomRentalPayment" tabindex="-1" aria-labelledby="modal_addRoomRentalPayment" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -206,8 +210,115 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="modal_editPayment" tabindex="-1" aria-labelledby="modal_editPayment" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="PaymentLabel">
+                    <i class="icon-plus2 mr-1"></i>
+                    @Html.Raw(Localization.Get("Edit Payment"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="EditRoomRentalId" name="RoomRentalId" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="PaymentTypeId">@Html.Raw(Localization.Get("Payment Type"))</label>
+                        <select name="PaymentTypeId" id="EditPaymentTypeId" class="form-control" asp-items="ViewBag.PaymentTypeId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="PaymentModeId">@Html.Raw(Localization.Get("Payment Mode"))</label>
+                        <select name="PaymentModeId" id="EditPaymentModeId" class="form-control" asp-items="ViewBag.PaymentModeId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="TotalAmount">@Html.Raw(Localization.Get("Total Amount"))</label>
+                        <input type="text" id="EditTotalAmount" name="TotalAmount" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="InvoiceNumber">@Html.Raw(Localization.Get("Invoice Number"))</label>
+                        <input type="text" id="EditInvoiceNumber" name="InvoiceNumber" class="form-control" />
+                    </div>
+                </div>
+               
+                <div class="modal-footer">
+                    <button class="btn btn-link" data-bs-dismiss="modal">
+                        <i class="icon-cross2 font-size-base mr-1"></i> Close
+                    </button>
+                    <button class="btn bg-primary" onclick="SaveEditedPayment()">
+                        <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                    </button>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
+
+        function setEditpayment(id,InvoiceNumber,TotalAmount,PaymentModeId,PaymentTypeId) {
+               $('#EditRoomRentalId').val(id);
+               $('#EditInvoiceNumber').val(InvoiceNumber);
+               $('#EditTotalAmount').val(TotalAmount);
+               $('#EditPaymentModeId').val(PaymentModeId);
+               $('#EditPaymentTypeId').val(PaymentTypeId);
+
+           };
+
+
+           function SaveEditedPayment() {
+                let roomRentalId = $('#EditRoomRentalId').val();
+               let invoiceNumber = $('#EditInvoiceNumber').val();
+              
+               let TotalAmount = $('#EditTotalAmount').val();
+               let PaymentModeId = $('#EditPaymentModeId').val();
+               let PaymentTypeId = $('#EditPaymentTypeId').val();
+ 
+
+
+               $.ajax({
+                   type: 'POST',
+                   url: '/TenantPayments/EditPayment',
+                   data: {
+                       Id: roomRentalId,
+                       InvoiceNumber: invoiceNumber,
+                       TotalAmount: TotalAmount,
+                       PaymentModeId: PaymentModeId,
+                       PaymentTypeId: PaymentTypeId
+                   },
+                   success: function () {
+                       location.reload();
+                   },
+                   error: function () {
+                       alert('Error editing payment.');
+                   }
+               });
+           }
+
+        function removePayment(id) {
+                  if (confirm('Are you sure you want to remove this payment?')) {
+                      $.ajax({
+                          type: 'POST',
+                          url: '/TenantPayments/DeletePayments',
+                          data: { Id: id },
+                          success: function () {
+                              location.reload();
+                          },
+                          error: function () {
+                              alert('Error removing payment.');
+                          }
+                      });
+                  }
+              }
+
+
         function setRoomRentalPaymentDetailId(id) {
             $('#RoomRentalPaymentId').val(id);
         }
