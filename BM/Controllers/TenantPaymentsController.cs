@@ -167,7 +167,40 @@ namespace BM.Controllers
 
             return Ok();
         }
-  
+
+
+        [HttpPost]
+          
+        public async Task<IActionResult> EditPayment(int Id, int PaymentTypeId,int PaymentModeId, float TotalAmount, string InvoiceNumber)
+        {
+            var roomRentalPayment = await _context.RoomRentalPayments.FindAsync(Id);
+            if (roomRentalPayment == null) return NotFound();
+
+            // Update the item entry's properties
+            roomRentalPayment.PaymentTypeId = PaymentTypeId;
+            roomRentalPayment.PaymentModeId = PaymentModeId;
+            roomRentalPayment.TotalAmount = TotalAmount;
+            roomRentalPayment.InvoiceNumber = InvoiceNumber;
+
+            // Save the changes to the database
+            _context.RoomRentalPayments.Update(roomRentalPayment);
+            await _context.SaveChangesAsync();
+
+
+            return Ok();
+        }
+
+        public async Task<IActionResult> DeletePayments(int Id)
+        {
+            var rpayment = await _context.RoomRentalPayments.FindAsync(Id);
+            if (rpayment == null) return NotFound();
+            rpayment.IsActive = false;
+            rpayment.IsDeleted = true;
+            _context.RoomRentalPayments.Update(rpayment);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 
 }
