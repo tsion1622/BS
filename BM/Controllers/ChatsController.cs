@@ -6,172 +6,288 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BM.Models;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using NuGet.Protocol.Plugins;
+using Microsoft.AspNetCore.SignalR;
+using Azure.Core;
+using Humanizer;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
+using System.Reflection.Metadata;
+using System.Runtime.Intrinsics.X86;
+using System.Security.Claims;
 
-namespace BM.Controllers
+
+
+namespace BuildingManagment.Controllers
 {
     public class ChatsController : Controller
     {
         private readonly BIMSContext _context;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatsController(BIMSContext context)
-        {
+        public ChatsController(BIMSContext context, IHubContext<ChatHub> hubContext)
+        { 
             _context = context;
+            _hubContext = hubContext;
         }
 
-        // GET: Chats
-        public async Task<IActionResult> Index()
-        {
-            var bIMSContext = _context.Chats.Include(c => c.ChatStatus).Include(c => c.Parent).Include(c => c.Receiver).Include(c => c.Sender);
-            return View(await bIMSContext.ToListAsync());
-        }
 
-        // GET: Chats/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        public JsonResult GetAllUsersWithChatSummary()
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                int? userId = HttpContext.Session.GetInt32("userid");
+                if (!userId.HasValue)
+                {
+                    return Json(new { success = false, error = "Session expired. Please log in again." });
+                }
 
-            var chat = await _context.Chats
-                .Include(c => c.ChatStatus)
-                .Include(c => c.Parent)
-                .Include(c => c.Receiver)
-                .Include(c => c.Sender)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (chat == null)
+                var users = _context.Users
+                    .Where(u => u.Id != userId) 
+                    .Select(u => new
+                    {
+                        u.Id,
+                        u.FirstName,
+                        LastMessageDate = _context.Chats
+                            .Where(c => (c.SenderId == userId && c.ReceiverId == u.Id) ||
+                                        (c.SenderId == u.Id && c.ReceiverId == userId))
+                            .OrderByDescending(c => c.Date)
+                            .Select(c => c.Date)
+                            .FirstOrDefault(),
+                        UnreadMessagesCount = _context.Chats
+                            .Count(c => c.SenderId == u.Id && c.ReceiverId == userId && c.ChatStatusId == 2) 
+                    })
+                    .OrderByDescending(u => u.LastMessageDate) 
+                    .ToList();
+
+                return Json(new { success = true, users });
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"Error fetching user list with chat summary: {ex.Message}");
+                return Json(new { success = false, error = "An error occurred while fetching users." });
             }
-
-            return View(chat);
         }
 
-        // GET: Chats/Create
-        public IActionResult Create()
+
+        [HttpGet]
+        public IActionResult GetUserChatHistory(int partnerId)
         {
-            ViewData["ChatStatusId"] = new SelectList(_context.ChatStatuses, "Id", "Id");
-            ViewData["ParentId"] = new SelectList(_context.Chats, "Id", "Id");
-            ViewData["ReceiverId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+            int? senderId = HttpContext.Session.GetInt32("userid");
+
+            var partner = _context.Users.FirstOrDefault(x => x.Id == partnerId);
+
+            string partnerName = partner.FirstName;
+
+            try
+            {
+                
+                if (!senderId.HasValue)
+                {
+                    return Json(new { success = false, error = "Session expired. Please log in again." });
+                }
+              
+                
+                var chatHistory = _context.Chats
+                    .Include(c => c.Parent)
+                    .Where(c =>
+                        (c.SenderId == senderId && c.ReceiverId == partnerId) ||
+                        (c.SenderId == partnerId && c.ReceiverId == senderId))
+                    .OrderBy(c => c.Date)
+                    .ToList();
+
+                var messagesToUpdate = chatHistory
+                    .Where(c => c.ReceiverId == senderId.Value && c.ChatStatusId == 2)
+                    .ToList();
+
+                foreach (var message in messagesToUpdate)
+                {
+                    message.ChatStatusId = 1; 
+                }
+
+                _context.SaveChanges();
+
+                var result = chatHistory.Select(c => new
+                {
+                    c.Id,
+                    c.Message,
+                    c.Date,
+                    IsSentByMe = c.SenderId == senderId
+                }).ToList();
+                
+                return Json(new {  partnerName, senderId = senderId, success = true, chatHistory = result });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching chat history: {ex.Message}");
+                return Json(new { success = false, error = "An error occurred while fetching chat history." });
+            }
         }
 
-        // POST: Chats/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SenderId,ReceiverId,ParentId,Message,ChatStatusId,Date,IsActive,IsDeleted")] Chat chat)
+        public async Task<JsonResult> UpdateMessage(int messageId, string message)
         {
-            if (ModelState.IsValid)
+            int? userId = HttpContext.Session.GetInt32("userid");
+            
+            try
             {
-                _context.Add(chat);
+                Console.WriteLine($"Received messageId: {messageId}, message: {message}");
+
+                var chatMessage = await _context.Chats.FindAsync(messageId);
+                if (chatMessage == null)
+                {
+                    Console.WriteLine("Message not found in database.");
+                    return Json(new { success = false, error = "Message not found." });
+                }
+                saveOldChat(chatMessage.Id,chatMessage.Message);
+
+                chatMessage.Message = message;
+                chatMessage.Date = DateOnly.FromDateTime(DateTime.Now);
+                _context.Chats.Update(chatMessage);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true });
             }
-            ViewData["ChatStatusId"] = new SelectList(_context.ChatStatuses, "Id", "Id", chat.ChatStatusId);
-            ViewData["ParentId"] = new SelectList(_context.Chats, "Id", "Id", chat.ParentId);
-            ViewData["ReceiverId"] = new SelectList(_context.Users, "Id", "Id", chat.ReceiverId);
-            ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", chat.SenderId);
-            return View(chat);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating message: {ex.Message}");
+                return Json(new { success = false, error = "An error occurred while updating the message." });
+            }
         }
 
-        // GET: Chats/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        private void saveOldChat(int chatId, string message)
         {
-            if (id == null)
+            var chatVersion = new ChatVersion
             {
-                return NotFound();
-            }
+               OldMessage = message,
+                ChatId = chatId,
+               Date = DateOnly.FromDateTime(DateTime.Now),
+               IsActive= true,
+               IsDeleted= false
+               
+            };
 
-            var chat = await _context.Chats.FindAsync(id);
-            if (chat == null)
-            {
-                return NotFound();
-            }
-            ViewData["ChatStatusId"] = new SelectList(_context.ChatStatuses, "Id", "Id", chat.ChatStatusId);
-            ViewData["ParentId"] = new SelectList(_context.Chats, "Id", "Id", chat.ParentId);
-            ViewData["ReceiverId"] = new SelectList(_context.Users, "Id", "Id", chat.ReceiverId);
-            ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", chat.SenderId);
-            return View(chat);
+           
+            _context.ChatVersions.Add(chatVersion);
+            _context.SaveChanges();
         }
 
-        // POST: Chats/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SenderId,ReceiverId,ParentId,Message,ChatStatusId,Date,IsActive,IsDeleted")] Chat chat)
+        public async Task<JsonResult> SendMessage(int receiverId, string message)
         {
-            if (id != chat.Id)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                int? senderId = HttpContext.Session.GetInt32("SenderId");
+                if (!senderId.HasValue)
                 {
-                    _context.Update(chat);
-                    await _context.SaveChangesAsync();
+                    return Json(new { success = false, error = "Session expired. Please log in again." });
                 }
-                catch (DbUpdateConcurrencyException)
+
+                if (string.IsNullOrWhiteSpace(message))
                 {
-                    if (!ChatExists(chat.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return Json(new { success = false, error = "Message cannot be empty." });
                 }
-                return RedirectToAction(nameof(Index));
+
+                var newChat = new Chat
+                {
+                    SenderId = senderId.Value,
+                    ReceiverId = receiverId,
+                    Message = message,
+                    Date = DateOnly.FromDateTime(DateTime.Now),
+                    IsActive = true,
+                    IsDeleted = false,
+                    ChatStatusId = 2
+                };
+                _context.Chats.Add(newChat);
+                await _context.SaveChangesAsync();
+
+                var hubContext = HttpContext.RequestServices.GetService<IHubContext<ChatHub>>();
+                await hubContext.Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", new
+                {
+                    SenderId = senderId.Value,
+                    Message = message,
+                    Date = DateTime.Now
+                });
+
+                var unreadMessagesCount = _context.Chats
+              .Where(c => c.ReceiverId == senderId.Value && c.ChatStatusId == 2 && c.IsActive && !c.IsDeleted)
+               .Count();
+
+                return Json(new { success = true });
             }
-            ViewData["ChatStatusId"] = new SelectList(_context.ChatStatuses, "Id", "Id", chat.ChatStatusId);
-            ViewData["ParentId"] = new SelectList(_context.Chats, "Id", "Id", chat.ParentId);
-            ViewData["ReceiverId"] = new SelectList(_context.Users, "Id", "Id", chat.ReceiverId);
-            ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", chat.SenderId);
-            return View(chat);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending message: {ex.Message}");
+                return Json(new { success = false, error = "An error occurred while sending the message." });
+            }
         }
 
-        // GET: Chats/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteMessage(int messageId)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                var chatMessage = await _context.Chats.FindAsync(messageId);
+                if (chatMessage == null)
+                {
+                    return Json(new { success = false, error = "Message not found." });
+                }
 
-            var chat = await _context.Chats
-                .Include(c => c.ChatStatus)
-                .Include(c => c.Parent)
-                .Include(c => c.Receiver)
-                .Include(c => c.Sender)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (chat == null)
+                _context.Chats.Remove(chatMessage);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"Error deleting message: {ex.Message}");
+                return Json(new { success = false, error = "An error occurred while deleting the message." });
             }
-
-            return View(chat);
         }
 
-        // POST: Chats/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+
+        [HttpPost]
+        public async Task<JsonResult> RealTimeTest(int receiverId,string message)
         {
-            var chat = await _context.Chats.FindAsync(id);
-            if (chat != null)
+            try
             {
-                _context.Chats.Remove(chat);
-            }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _hubContext.Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", message);
+                return Json(new { success = true, message = "Message send successfully!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in RealTimeTest: {ex.Message}");
+                return Json(new { success = false, error = "An error occurred while broadcasting the message." });
+            }
         }
+    
+
+        public ActionResult Index(int receiverId, int? parentId)
+        {
+            var senderId = 1;  
+            var chats = _context.Chats
+                .Include(c => c.Sender)       
+                .Include(c => c.Receiver)    
+                .Include(c => c.Parent)       
+                .Where(c => (c.SenderId == senderId && c.ReceiverId == receiverId) ||
+                            (c.SenderId == receiverId && c.ReceiverId == senderId))
+                .Where(c => c.IsActive && !c.IsDeleted)
+                .OrderBy(c => c.Date)
+                .ToList();
+
+            ViewBag.ParentId = parentId;
+            return View(chats);
+        }
+
+        
+       
 
         private bool ChatExists(int id)
         {
