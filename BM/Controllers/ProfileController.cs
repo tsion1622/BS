@@ -43,11 +43,29 @@ namespace BM.Controllers
                  .Include(x => x.Gender)
                 .Include(x => x.Notifications).ThenInclude(x => x.NotificationStatus)
                  .Include(x => x.Notifications).ThenInclude(x => x.NotificationType)
+                .Include(u => u.OwnerUsers).ThenInclude(u => u.Owner).ThenInclude(u => u.OwnershipType)
+               .Include(u => u.Buildings).ThenInclude(u => u.BuildingType)
+               .Include(u => u.Buildings).ThenInclude(u => u.UseType)
+               .Include(u => u.Buildings).ThenInclude(u => u.BuildingEmployees)
+               .Include(u => u.Buildings).ThenInclude(u => u.Floors)
+               .ThenInclude(u => u.Rooms)
+               .Include(u => u.OwnerUsers).ThenInclude(u => u.Owner).ThenInclude(u => u.OwnershipType)
                 .FirstOrDefault(x => x.Id == userId);
+            var building = new Building();
+            ViewData["BuildingTypeId"] = new SelectList(_context.BuildingTypes, "Id", "Name", building.BuildingTypeId);
+            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", building.CityId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name", building.LocationId);
+            ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "FullName", building.OwnerId);
+            ViewData["OwnerShipTypeId"] = new SelectList(_context.OwnershipTypes, "Id", "Name", building.OwnershipTypeId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", building.UserId);
+            ViewData["UseTypeId"] = new SelectList(_context.UseTypes, "Id", "Name", building.UseTypeId);
+
+            ViewData["OwnerShipTypeId"] = new SelectList(_context.OwnershipTypes, "Id", "Name");
             return View(user);
+           
         }
 
-        // GET: UseTypes/Details/5
+      
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,15 +73,21 @@ namespace BM.Controllers
                 return NotFound();
             }
 
-            var useType = await _context.UseTypes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (useType == null)
+            var user = await _context.Users
+
+                   .Include(u => u.OwnerUsers).ThenInclude(u => u.Owner).ThenInclude(u => u.OwnershipType)
+                   .Include(u => u.Buildings).ThenInclude(u => u.BuildingType)
+                   .Include(u => u.Buildings).ThenInclude(u => u.BuildingEmployees)
+                   .Include(u => u.Buildings).ThenInclude(u => u.Floors).ThenInclude(u => u.Rooms)
+                   .FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(useType);
+            return View(user);
         }
+
 
         // GET: UseTypes/Create
         public IActionResult Create()
@@ -220,20 +244,7 @@ namespace BM.Controllers
 
             return Redirect(Request.GetTypedHeaders().Referer.ToString());
         }
-        //public async Task SendEmailAsync(string email, string subject, string message)
-        //{
-        //    var mailMessage = new MailMessage()
-        //    {
-        //        From = new MailAddress("cakek433@gmail.com"),
-        //        Subject = subject,
-        //        Body = message,
-        //        IsBodyHtml = true,
-        //    };
-
-        //    mailMessage.To.Add(email);
-
-        //    await _smtpClient.SendMailAsync(mailMessage);
-        //}
+      
 
 
 
@@ -321,24 +332,7 @@ namespace BM.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public IActionResult CheckCode(string verificationcode)
-        //{
-
-        //    var storedVerificationCode = HttpContext.Session.GetString("VerificationCode");
-
-
-        //    if (string.IsNullOrWhiteSpace(verificationcode) ||
-        //        string.IsNullOrWhiteSpace(storedVerificationCode) ||
-        //        verificationcode != storedVerificationCode)
-        //    {
-        //        ModelState.AddModelError(string.Empty, "Invalid verification code. Please try again.");
-        //        return View(); 
-        //    }
-
-
-        //    TempData["SuccessMessage"] = "The verification code is valid. You can now reset your password.";
-        //    return View("VerifyEmail"); 
-        //}
+      
         public async Task<IActionResult> VerifyEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -489,44 +483,7 @@ namespace BM.Controllers
 
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> ResetPassword(string email, string newPassword, string verificationCode)
-        //{
-
-        //    var storedCode = HttpContext.Session.GetString("VerificationCode");
-        //    var userEmail = HttpContext.Session.GetString("UserEmail");
-
-        //    if (verificationCode == storedCode && email.Equals(userEmail, StringComparison.OrdinalIgnoreCase))
-        //    {
-
-        //        var user = await _userManager.FindByEmailAsync(email);
-        //        if (user != null)
-        //        {
-
-        //            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-
-        //            if (result.Succeeded)
-        //            {
-
-        //                return RedirectToAction("ResetPasswordConfirmation");
-        //            }
-
-
-        //            foreach (var error in result.Errors)
-        //            {
-        //                ModelState.AddModelError(string.Empty, error.Description);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError(string.Empty, "Invalid verification code or email.");
-        //    }
-
-        //    return View();
-
-        //}
+       
 
         public IActionResult ResetPasswordConfirmation()
         {
@@ -555,6 +512,62 @@ namespace BM.Controllers
 
             return View(notifications);
         }
+
+      
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOwner(int OwnershipTypeId, string fullName, int Tin, int? ownerid)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                TempData["error"] = "User is not authenticated.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (_context.Owners.Any(f => f.Tin == Tin || f.FullName.ToLower().Trim() == fullName.ToLower().Trim()))
+            {
+                TempData["error"] = "This owner already exists with this Tin number please change Tin Number";
+                return RedirectToAction(nameof(Index));
+            }
+            var owner = new Owner
+            {
+                OwnershipTypeId = OwnershipTypeId,
+                
+                FullName = fullName,
+                DocumentId = 1,
+                Tin = Tin,
+                Verified = true,
+                IsActive = true,
+                IsDeleted = false,
+
+            };
+
+            _context.Owners.Add(owner);
+            await _context.SaveChangesAsync();
+            saveOwnerUser(userId, owner.Id);
+            return RedirectToAction("Index");
+        }
+
+        private void saveOwnerUser(int? UserId, int ownerid)
+        {
+            if (!_context.OwnerUsers.Any(f => f.Id == ownerid && f.UserId == UserId))
+            {
+                var ownerUser = new OwnerUser
+                {
+                    UserId = UserId.Value,
+                    OwnerId = ownerid,
+                    IsActive = true,
+                    IsDeleted = false
+
+                };
+                _context.OwnerUsers.Add(ownerUser);
+                _context.SaveChanges();
+            }
+        }
+
 
 
     }
