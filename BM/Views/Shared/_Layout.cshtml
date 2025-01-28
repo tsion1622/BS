@@ -1,53 +1,70 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor HttpContextAccessor
+ 
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BM</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/fonts/fontawesome/css/all.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BM.styles.css" asp-append-version="true" />
 </head>
+
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BM</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button id="showUsersButton" class="btn btn-outline-secondary position-relative shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-message"></i>
+
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @ViewBag.UnreadMessagesCount
+                    </span>
+                </button>
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark "
+                           asp-area="" asp-controller="Profiles" asp-action="Index">
+                            @* <i class="bi bi-building"></i> *@ Profile
+                        </a>
+                    </li>
+                    </ul>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                   <partial name="_menu"/>
-                </div>
-               @*  <div>
-                    @if (Context.Session.GetString("FirstName") == null)
-                    {
-                    <a asp-action="Login" asp-controller="Account">
-                        Login
-                    </a>
+                    @{
+                        var RoleName = HttpContextAccessor.HttpContext.Session.GetString("RoleName");
+                        <span>
+                            @RoleName
+                        </span>
                     }
+                    @if (RoleName == "Admin")
+                    {
+                        <partial name="_adminmenu" />
+                        
+                    }
+
                     else
                     {
-            <h4>
-                Welcome @Context.Session.GetString("FirstName")
-                <a asp-action="Logout" asp-controller="Account">
-                    LogOut
-                </a>
-            </h4>
+                        <partial name="_menu" />
                     }
-
-                </div> *@
-             
-
-                <br />
-
-               
-
+                   
+                </div>
+                
             </div>
         </nav>
+       
+       
     </header>
+   
     <div class="container">
         <main role="main" class="pb-3">
             @if (TempData["In"] != null)
@@ -69,10 +86,79 @@
                 </div>
             }
 
+            
 
             @RenderBody()
 
         </main>
+
+
+        <div id="usersModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">X</button>
+
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="blue"
+                                 stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                 class="feather feather-users">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Contacts
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search users by name..." />
+                        </div>
+                        <ul id="usersList" style="color:blue" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chatModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">X</button>
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="blue"
+                                 stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                 class="feather feather-user">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+
+                            <span id="partnerName"></span>
+                        </h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div id="chatContainer" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                        </div>
+
+                        <textarea id="messageInput" class="form-control" rows="3" placeholder="Type your message here..."></textarea>
+
+                        <button id="sendMessageButton" class="btn btn-primary mt-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="blue"
+                                 stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                 class="feather feather-send">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
   
@@ -86,6 +172,11 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.12/signalr.min.js"></script>
+    <script src="~/js/chat/chat.js"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
