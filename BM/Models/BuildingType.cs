@@ -20,5 +20,8 @@ public partial class BuildingType
     public bool IsDeleted { get; set; }
 
     [InverseProperty("BuildingType")]
+    public virtual ICollection<BuildingRequest> BuildingRequests { get; set; } = new List<BuildingRequest>();
+
+    [InverseProperty("BuildingType")]
     public virtual ICollection<Building> Buildings { get; set; } = new List<Building>();
 }
