@@ -190,7 +190,7 @@ else
 </div>
 
 
-<div class="modal fade" id="modal_addItemEntry" tabindex="-1" aria-labelledby="modal_addItemEntry" aria-hidden="true">
+@* <div class="modal fade" id="modal_addItemEntry" tabindex="-1" aria-labelledby="modal_addItemEntry" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -250,7 +250,7 @@ else
                     <label for="EditEntryDate">@Html.Raw(Localization.Get("Entry Date"))</label>
                     <input type="date" id="EditEntryDate" name="EditEntryDate" class="form-control" required />
                 </div> *@  
-                <div class="form-group">
+               @*  <div class="form-group">
                     <label for="EditQuantity">@Html.Raw(Localization.Get("Quantity"))</label>
                     <input type="number" id="EditQuantity" name="Quantity" class="form-control" min="0" required />
                 </div>
@@ -374,6 +374,187 @@ else
         </div>
     </div>
 </div>
+ *@
+
+
+<!-- Modal Add Item Entry -->
+<div class="modal fade" id="modal_addItemEntry" tabindex="-1" aria-labelledby="modal_addItemEntry" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ItemEntryLabel">
+                    <i class="icon-plus2 mr-1"></i>
+                    @Html.Raw(Localization.Get("Add Item Entry"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" id="ShopItemId" name="ShopItemId" value="@Model.Id">
+                    <!-- ShopItemId value here -->
+                </div>
+                <div class="form-group mb-3">
+                    <label for="EntryDate">@Html.Raw(Localization.Get("Entry Date"))</label>
+                    <input type="date" id="EntryDate" name="EntryDate" class="form-control" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Quantity">@Html.Raw(Localization.Get("Quantity"))</label>
+                    <input type="number" id="Quantity" name="Quantity" class="form-control" min="0" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="WithdrawQuantity">@Html.Raw(Localization.Get("Withdraw Quantity"))</label>
+                    <input type="number" id="WithdrawQuantity" name="WithdrawQuantity" class="form-control">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Price">@Html.Raw(Localization.Get("Price"))</label>
+                    <input type="text" id="Price" name="Price" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveItemEntry()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Item Entry -->
+<div class="modal fade" id="modal_editItemEntry" tabindex="-1" aria-labelledby="modal_editItemEntry" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ItemEntryLabel">
+                    <i class="icon-pencil mr-1"></i>
+                    @Html.Raw(Localization.Get("Edit Item Entry"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="EditItemEntryId" />
+                <div class="form-group mb-3">
+                    <label for="EditQuantity">@Html.Raw(Localization.Get("Quantity"))</label>
+                    <input type="number" id="EditQuantity" name="Quantity" class="form-control" min="0" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="EditPrice">@Html.Raw(Localization.Get("Price"))</label>
+                    <input type="text" id="EditPrice" name="Price" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveEditedItemEntry()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Add Item Entry Variation -->
+<div class="modal fade" id="modal_addItemEntryVariation" tabindex="-1" aria-labelledby="modal_addItemEntryVariation" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ItemEntryVariationLabel">
+                    <i class="icon-plus2 mr-1"></i>
+                    @Html.Raw(Localization.Get("Add Item Entry Variation"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" id="ShopItemId" name="ShopItemId" value="@Model.Id">
+                    <!-- ShopItemId value here -->
+                </div>
+                <div class="form-group mb-3">
+                    <input type="hidden" id="NItemEntryId" name="ItemEntryId" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="VarationTypeId">@Html.Raw(Localization.Get("Varation Type"))</label>
+                    <select name="VarationTypeId" id="VarationTypeId" class="form-control" asp-items="ViewBag.VarationTypeId"></select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="VarationId">@Html.Raw(Localization.Get("Varation"))</label>
+                    <select name="VarationId" id="VarationId" class="form-control" asp-items="ViewBag.VarationId"></select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Quantity">@Html.Raw(Localization.Get("Quantity"))</label>
+                    <input type="number" id="NQuantity" name="Quantity" class="form-control" min="0" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Price">@Html.Raw(Localization.Get("Price"))</label>
+                    <input type="number" id="NPrice" name="Price" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveItemEntryVariation()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Item Entry Variation -->
+<div class="modal fade" id="modal_editItemEntryVariation" tabindex="-1" aria-labelledby="modal_editItemEntryVariation" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ItemEntryVariationLabel">
+                    <i class="icon-pencil mr-1"></i>
+                    @Html.Raw(Localization.Get("Edit Item Entry Variation"))
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" id="EditShopItemId" name="ShopItemId" value="@Model.Id">
+                    <!-- ShopItemId value here -->
+                </div>
+                <div class="form-group mb-3">
+                    <input type="hidden" id="MEditItemEntryId" name="ItemEntryId" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="EditVarationTypeId">@Html.Raw(Localization.Get("Varation Type"))</label>
+                    <select name="VarationTypeId" id="EditVarationTypeId" class="form-control" asp-items="ViewBag.VarationTypeId"></select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="EditVarationId">@Html.Raw(Localization.Get("Varation"))</label>
+                    <select name="VarationId" id="EditVarationId" class="form-control" asp-items="ViewBag.VarationId"></select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="EditQuantity">@Html.Raw(Localization.Get("Quantity"))</label>
+                    <input type="number" id="MEditQuantity" name="Quantity" class="form-control" min="0" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="EditPrice">@Html.Raw(Localization.Get("Price"))</label>
+                    <input type="number" id="MEditPrice" name="Price" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-link" data-bs-dismiss="modal">
+                    <i class="icon-cross2 font-size-base mr-1"></i> Close
+                </button>
+                <button class="btn bg-primary" onclick="SaveEditedItemEntryVariation()">
+                    <i class="icon-checkmark3 font-size-base mr-1"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
 
 <div class="modal fade" id="imagemodal_read" tabindex="-1" aria-labelledby="imagemodal_readLabel" aria-hidden="true">
