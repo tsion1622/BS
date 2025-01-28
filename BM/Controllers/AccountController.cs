@@ -34,29 +34,43 @@ namespace BM.Controllers
             //}
             public ActionResult Login(string userName, string password)
             {
-                try
+           
+            try
                 {
-                    var user = _context.Users.FirstOrDefault(u => u.UserName == userName && u.Password == password && u.IsActive && !u.IsDeleted);
-                   HttpContext.Session.SetString("userName", "UserId");
-                  HttpContext.Session.SetInt32("UserId", user.Id);
+                    var user = _context.Users
+                    .Include(u => u.UserRoles)   
+                    .FirstOrDefault(u => u.UserName == userName && u.Password == password && u.IsActive && !u.IsDeleted);
+                  
+
                 if (user != null)
                     {
-                        
-                        TempData["Success"] = "Login successful!";
+                    var userRole = user.UserRoles.Where(x => x.IsActive == true);
+                    if (userRole.Any(x => x.RoleId == 1)) {
+                        HttpContext.Session.SetString("RoleName", "Admin");
+                    }
+                    HttpContext.Session.SetString("userName", user.FirstName + " " + user.MiddleName);
+                    HttpContext.Session.SetInt32("UserId", user.Id);
+                   
+                    TempData["Success"] = "Login successful!";
                     return RedirectToAction("Index", "Profile");
                     }
-                    else
+               
+                    else 
                     {
                         TempData["Error"] = "Invalid username or password.";
                         return View();
                     }
-                }
+ 
+            }
+
                 catch (Exception ex)
                 {
-                    TempData["Error"] = "An error occurred during login.";
-                    return View();
-                }
+                    TempData["error"] = "An error occurred during login.";
+                return RedirectToAction("Login", "Account");
             }
+
+
+        }
           
             
         
@@ -96,6 +110,7 @@ namespace BM.Controllers
                 TempData["Success"] = " you have successfully registered!!";
                 //TempData["FirstName"] = firstName;
                 return RedirectToAction("Login");
+
             }
             catch (Exception ex)
             {
