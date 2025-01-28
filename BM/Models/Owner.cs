@@ -37,6 +37,9 @@ public partial class Owner
     [InverseProperty("Owners")]
     public virtual Documente Document { get; set; }
 
+    [InverseProperty("Owner")]
+    public virtual ICollection<OwnerUser> OwnerUsers { get; set; } = new List<OwnerUser>();
+
     [ForeignKey("OwnershipTypeId")]
     [InverseProperty("Owners")]
     public virtual OwnershipType OwnershipType { get; set; }
