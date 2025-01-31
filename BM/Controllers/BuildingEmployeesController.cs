@@ -21,7 +21,7 @@ namespace BM.Controllers
         // GET: BuildingEmployees
         public async Task<IActionResult> Index()
         {
-            var bIMSContext = _context.BuildingEmployees.Include(b => b.Building).Include(b => b.ServiceCategory).Include(b => b.User);
+            var bIMSContext = _context.BuildingEmployees.Include(b => b.Building).Include(b => b.EmployeeType).Include(b => b.User);
             return View(await bIMSContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace BM.Controllers
 
             var buildingEmployee = await _context.BuildingEmployees
                 .Include(b => b.Building)
-                .Include(b => b.ServiceCategory)
+                .Include(b => b.EmployeeType)
                 .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (buildingEmployee == null)
@@ -50,7 +50,7 @@ namespace BM.Controllers
         public IActionResult Create()
         {
             ViewData["BuildingId"] = new SelectList(_context.Buildings, "Id", "Id");
-            ViewData["ServiceCategoryId"] = new SelectList(_context.ServiceCategories, "Id", "Id");
+            ViewData["EmployeeTypeId"] = new SelectList(_context.EmployeeTypes, "Id", "Id");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -60,7 +60,7 @@ namespace BM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,PhoneNumber,BuildingId,UserId,ServiceCategoryId,IsActive,IsDeleted")] BuildingEmployee buildingEmployee)
+        public async Task<IActionResult> Create([Bind("Id,FullName,PhoneNumber,BuildingId,UserId,EmployeeTypeId,IsActive,IsDeleted")] BuildingEmployee buildingEmployee)
         {
             if (ModelState.IsValid)
             {
@@ -69,7 +69,7 @@ namespace BM.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BuildingId"] = new SelectList(_context.Buildings, "Id", "Id", buildingEmployee.BuildingId);
-            ViewData["ServiceCategoryId"] = new SelectList(_context.ServiceCategories, "Id", "Id", buildingEmployee.ServiceCategoryId);
+            ViewData["EmployeeTypeId"] = new SelectList(_context.EmployeeTypes, "Id", "Id", buildingEmployee.EmployeeTypeId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", buildingEmployee.UserId);
             return View(buildingEmployee);
         }
@@ -88,7 +88,7 @@ namespace BM.Controllers
                 return NotFound();
             }
             ViewData["BuildingId"] = new SelectList(_context.Buildings, "Id", "Id", buildingEmployee.BuildingId);
-            ViewData["ServiceCategoryId"] = new SelectList(_context.ServiceCategories, "Id", "Id", buildingEmployee.ServiceCategoryId);
+            ViewData["EmployeeTypeId"] = new SelectList(_context.EmployeeTypes, "Id", "Id", buildingEmployee.EmployeeTypeId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", buildingEmployee.UserId);
             return View(buildingEmployee);
         }
@@ -98,7 +98,7 @@ namespace BM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,PhoneNumber,BuildingId,UserId,ServiceCategoryId,IsActive,IsDeleted")] BuildingEmployee buildingEmployee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,PhoneNumber,BuildingId,UserId,EmployeeTypeId,IsActive,IsDeleted")] BuildingEmployee buildingEmployee)
         {
             if (id != buildingEmployee.Id)
             {
@@ -126,7 +126,7 @@ namespace BM.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BuildingId"] = new SelectList(_context.Buildings, "Id", "Id", buildingEmployee.BuildingId);
-            ViewData["ServiceCategoryId"] = new SelectList(_context.ServiceCategories, "Id", "Id", buildingEmployee.ServiceCategoryId);
+            ViewData["EmployeeTypeId"] = new SelectList(_context.EmployeeTypes, "Id", "Id", buildingEmployee.EmployeeTypeId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", buildingEmployee.UserId);
             return View(buildingEmployee);
         }
@@ -141,7 +141,7 @@ namespace BM.Controllers
 
             var buildingEmployee = await _context.BuildingEmployees
                 .Include(b => b.Building)
-                .Include(b => b.ServiceCategory)
+                .Include(b => b.EmployeeType)
                 .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (buildingEmployee == null)
