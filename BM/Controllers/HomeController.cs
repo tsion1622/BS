@@ -1,17 +1,23 @@
 using BM.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.AspNetCore.SignalR;
+using BM.SignalR.hub;
+
 
 namespace BM.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : Controller 
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
+        private readonly IHubContext<NotificationHub> _hubContext; 
+        public HomeController(IHubContext<NotificationHub> hubContext, ILogger<HomeController> logger) 
+        { 
+            _hubContext = hubContext;
             _logger = logger;
         }
+
+      
 
         public IActionResult Index()
         {
@@ -56,7 +62,27 @@ namespace BM.Controllers
             {
             return a + b;
             }
+
+        public IActionResult Chat() { 
         
+        return View();
+        }
+        //[HttpPost]
+        //public IActionResult Chat()
+
+        //{
+
+        //    return View();
+        //}
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendMessage(string message)
+        {
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Admin", message);
+            return Ok(new { success = true, message = "Message sent successfully!" });
+        }
 
         public IActionResult LogInx()
         {
