@@ -31,20 +31,13 @@
         <button type="submit" class="btn btn-primary w-100">Verify Email</button>
     </form>
 
-    @if (TempData["errr"] != null)
-    {
-        <div class="error-message">@TempData["errr"]</div>
-    }
-    @if (TempData["rt"] != null)
-    {
-        <div class="success-message">@TempData["rt"]</div>
-    }
+  
 </div>
 
 <style>
     .form-container {
-        max-width: 400px; /* Set a maximum width */
-        margin: 50px auto; /* Center the form */
+        max-width: 400px; 
+        margin: 50px auto; 
         padding: 30px;
         background-color: #f8f9fa;
         border-radius: 10px;
