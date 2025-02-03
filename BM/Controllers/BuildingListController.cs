@@ -83,13 +83,13 @@ namespace BM.Controllers
                     RentalRequestId = r.RoomRentalRequests
                         .Where(x => x.IsActive && x.UserId == userId)
                         .Select(x => x.Id)
-                        .FirstOrDefault() // Get the first active rental request ID
+                        .FirstOrDefault() 
                 })
                 .ToListAsync();
 
             return Json(rooms);
         }
-        public IActionResult saverentalRequest(int RoomId , string Description)
+        public IActionResult saverentalRequest(int RoomId, string Description)
         {
             if (HttpContext.Session.GetInt32("UserId") == null)
             {
@@ -97,35 +97,37 @@ namespace BM.Controllers
             }
             int? userId = HttpContext.Session.GetInt32("UserId");
 
-            var roomRentalRequest = _context.RoomRentalRequests.FirstOrDefault(r => r.RoomId == RoomId && r.UserId == userId && r.IsDeleted==false);
-            if (roomRentalRequest == null) {
+          
+            var existingRequest = _context.RoomRentalRequests
+                .FirstOrDefault(r => r.RoomId == RoomId && r.UserId == userId && !r.IsDeleted);
 
-                roomRentalRequest = new RoomRentalRequest
+            if (existingRequest == null)
+            {
+               
+                var roomRentalRequest = new RoomRentalRequest
                 {
-
                     RoomId = RoomId,
                     Description = Description,
                     UserId = userId.Value,
                     RequestedDate = DateTime.Now,
-                    RequestStatusId = 1,
+                    RequestStatusId = 1, 
                     IsActive = true,
-                    
-
                 };
+
                 _context.RoomRentalRequests.Add(roomRentalRequest);
                 _context.SaveChanges();
-                TempData["success"] = " Request saved!";
-  
+                TempData["success"] = "Request saved!";
             }
             else
             {
-                TempData["Info"] = "Exists";
-                
+                Console.WriteLine("Existing request found:");
+                Console.WriteLine($"Request ID: {existingRequest.Id}, Room ID: {existingRequest.RoomId}, User ID: {existingRequest.UserId}");
+
+                TempData["Info"] = "Request for this room already exists.";
             }
 
             return Redirect(Request.GetTypedHeaders().Referer.ToString());
         }
-
         public async Task<IActionResult> Deleterentalrequest(int id)
         {
             var roomRentalRequest = await _context.RoomRentalRequests.FirstOrDefaultAsync(x=>x.Id == id);
