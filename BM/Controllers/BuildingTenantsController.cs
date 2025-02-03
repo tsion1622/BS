@@ -196,9 +196,6 @@ namespace BM.Controllers
                 return BadRequest("Invalid Tenant ID.");
             }
 
-
-
-
             var roomRental = new RoomRental
             {
                 TenantId = TenantId,
