@@ -15,6 +15,11 @@ public partial class Item
     [StringLength(50)]
     public string Name { get; set; }
 
+    public int UserId { get; set; }
+
+    [StringLength(250)]
+    public string Description { get; set; }
+
     public int ItemCategoryId { get; set; }
 
     public bool IsAvailable { get; set; }
@@ -34,5 +39,12 @@ public partial class Item
     public virtual ICollection<ItemPrice> ItemPrices { get; set; } = new List<ItemPrice>();
 
     [InverseProperty("Item")]
-    public virtual ICollection<Shop> Shops { get; set; } = new List<Shop>();
+    public virtual ICollection<ShopItem> ShopItems { get; set; } = new List<ShopItem>();
+
+    [ForeignKey("UserId")]
+    [InverseProperty("Items")]
+    public virtual User User { get; set; }
+
+    [InverseProperty("Item")]
+    public virtual ICollection<VarationType> VarationTypes { get; set; } = new List<VarationType>();
 }
