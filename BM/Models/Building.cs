@@ -70,7 +70,7 @@ public partial class Building
     public virtual OwnershipType OwnershipType { get; set; }
 
     [InverseProperty("Building")]
-    public virtual ICollection<ShopLocation> ShopLocations { get; set; } = new List<ShopLocation>();
+    public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();
 
     [ForeignKey("UseTypeId")]
     [InverseProperty("Buildings")]
