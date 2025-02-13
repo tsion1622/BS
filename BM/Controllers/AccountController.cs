@@ -71,9 +71,57 @@ namespace BM.Controllers
 
 
         }
-          
-            
-        
+
+        public ActionResult Login2(string userName, string password)
+        {
+            try
+            {
+                var user = _context.Users
+                    .Include(u => u.UserRoles)
+                    .FirstOrDefault(u => u.UserName == userName && u.Password == password && u.IsActive && !u.IsDeleted);
+
+                if (user != null)
+                {
+                    var userRoles = user.UserRoles.Where(x => x.IsActive == true).ToList();
+
+                   
+                    if (userRoles.Any(x => x.RoleId == 1))
+                    {
+                        HttpContext.Session.SetString("RoleName", "Admin");
+                        HttpContext.Session.SetString("userName", user.FirstName + " " + user.MiddleName);
+                        HttpContext.Session.SetInt32("UserId", user.Id);
+
+                        TempData["Success"] = "Login successful!";
+                        return RedirectToAction("Index", "Profile");
+                    }
+                   
+                    else if (userRoles.Any(x => x.RoleId == 2))
+                    {
+                        HttpContext.Session.SetString("RoleName", "Guest");
+                        HttpContext.Session.SetString("userName", user.FirstName + " " + user.MiddleName);
+                        HttpContext.Session.SetInt32("UserId", user.Id);
+
+                        TempData["Success"] = "Login successful!";
+                        return RedirectToAction("Index", "Home"); 
+                    }
+
+                    
+                }
+                else
+                {
+                    TempData["Error"] = "Invalid username or password.";
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "An error occurred during login.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            return View(); 
+        }
+
         public IActionResult SignUp()
         {
            
