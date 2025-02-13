@@ -16,28 +16,6 @@ namespace BM.Controllers
         {
             _context = context;
         }
-        //public IActionResult Index(int? id)
-        //{
-        //    int? userId = HttpContext.Session.GetInt32("UserId");
-
-        //    if (!userId.HasValue)
-        //    {
-        //        return RedirectToAction("Login", "Account");
-        //    }
-
-        //    var tenants = _context.Tenants
-        //        .Include(x => x.Building)
-        //        .Include(x => x.TenantType);
-
-
-        //    ViewData["BuildingId"] = new SelectList(_context.Buildings
-        //        .Where(b => b.IsActive), "Id", "Name");
-
-
-        //    return View(tenants);
-        //}
-
-
         public IActionResult Index(int? id)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
@@ -49,16 +27,38 @@ namespace BM.Controllers
 
             var tenants = _context.Tenants
                 .Include(x => x.Building)
-                .Include(x => x.TenantType)
-                .Where(x => x.Id == (int)userId);
+                .Include(x => x.TenantType);
+
 
             ViewData["BuildingId"] = new SelectList(_context.Buildings
                 .Where(b => b.IsActive), "Id", "Name");
-            
-            ViewBag.SelectedBuildingId = id;
+
 
             return View(tenants);
         }
+
+
+        //public IActionResult Index(int? id)
+        //{
+        //    int? userId = HttpContext.Session.GetInt32("UserId");
+
+        //    if (!userId.HasValue)
+        //    {
+        //        return RedirectToAction("Login", "Account");
+        //    }
+
+        //    var tenants = _context.Tenants
+        //        .Include(x => x.Building)
+        //        .Include(x => x.TenantType)
+        //        .Where(x => x.Id == (int)userId);
+
+        //    ViewData["BuildingId"] = new SelectList(_context.Buildings
+        //        .Where(b => b.IsActive), "Id", "Name");
+
+        //    ViewBag.SelectedBuildingId = id;
+
+        //    return View(tenants);
+        //}
 
         public IActionResult Details(int? id)
         {
