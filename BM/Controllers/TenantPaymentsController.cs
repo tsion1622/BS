@@ -16,6 +16,28 @@ namespace BM.Controllers
         {
             _context = context;
         }
+        //public IActionResult Index(int? id)
+        //{
+        //    int? userId = HttpContext.Session.GetInt32("UserId");
+
+        //    if (!userId.HasValue)
+        //    {
+        //        return RedirectToAction("Login", "Account");
+        //    }
+
+        //    var tenants = _context.Tenants
+        //        .Include(x => x.Building)
+        //        .Include(x => x.TenantType);
+
+
+        //    ViewData["BuildingId"] = new SelectList(_context.Buildings
+        //        .Where(b => b.IsActive), "Id", "Name");
+
+
+        //    return View(tenants);
+        //}
+
+
         public IActionResult Index(int? id)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
@@ -25,39 +47,24 @@ namespace BM.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            //var approvedRoomRentalRequests = _context.RoomRentalRequests
-            //    .Where(rr => rr.UserId == userId && rr.RequestStatusId == 2)
-            //    .Select(rr => rr.RoomId)
-            //    .ToList();
-
-            //ViewBag.ApprovedRoomRentalRequests = approvedRoomRentalRequests;
-
-
-            //var buildingId = _context.Rooms
-            //    .Where(r => approvedRoomRentalRequests.Contains(r.Id))
-            //    .Select(r => r.Floor.BuildingId)
-            //    .Distinct()
-            //    .ToList();
-
-
             var tenants = _context.Tenants
                 .Include(x => x.Building)
-                .Include(x => x.TenantType);
-                //.Where(x => x.BuildingId==id.Value);
+                .Include(x => x.TenantType)
+                .Where(x => x.Id == (int)userId);
 
             ViewData["BuildingId"] = new SelectList(_context.Buildings
                 .Where(b => b.IsActive), "Id", "Name");
-           // ViewData["TenantTypeId"] = new SelectList(_context.TenantTypes, "Id", "Name");
+
+            ViewBag.SelectedBuildingId = id;
 
             return View(tenants);
         }
-
 
         public IActionResult Details(int? id)
         {
             if (!id.HasValue)
             {
-                return BadRequest(); 
+                return BadRequest();
             }
 
             var tenant = _context.Tenants
@@ -99,7 +106,7 @@ namespace BM.Controllers
                     Name = $"{s.Name}/{s.Floor.Name}/{s.Floor.Building.Name}/{s.Floor.Building.City.Name}"
                 });
 
-          
+
             ViewBag.PaymentTypeId = new SelectList(_context.PaymentTypes, "Id", "Name");
             ViewBag.PaymentModeId = new SelectList(_context.PaymentModes, "Id", "Name");
             ViewBag.MonthId = new SelectList(_context.Months, "Id", "Name");
@@ -143,21 +150,21 @@ namespace BM.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRoomRentalPayment(int RoomRentalPaymentId, int MonthId, int YearId, float TotalAmount)
         {
-           
+
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
                 return BadRequest("User must be logged in.");
             }
 
-            
+
             var roomRentalPaymentDetails = new RoomRentalPaymentDetail
             {
                 RoomRentalPaymentId = RoomRentalPaymentId,
                 MonthId = MonthId,
                 YearId = YearId,
                 TotalAmount = TotalAmount,
-                AccceptedBy = userId.Value,  
+                AccceptedBy = userId.Value,
                 Date = DateTime.Now,
                 IsActive = true,
             };
@@ -170,8 +177,8 @@ namespace BM.Controllers
 
 
         [HttpPost]
-          
-        public async Task<IActionResult> EditPayment(int Id, int PaymentTypeId,int PaymentModeId, float TotalAmount, string InvoiceNumber)
+
+        public async Task<IActionResult> EditPayment(int Id, int PaymentTypeId, int PaymentModeId, float TotalAmount, string InvoiceNumber)
         {
             var roomRentalPayment = await _context.RoomRentalPayments.FindAsync(Id);
             if (roomRentalPayment == null) return NotFound();
