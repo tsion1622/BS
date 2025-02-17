@@ -374,7 +374,7 @@ namespace BM.Controllers
 
             HttpContext.Session.SetString("VerificationCode", verificationCode);
             HttpContext.Session.SetString("UserEmail", email);
-            TempData["rt"] = "vcss";
+            TempData["rt"] = "Verfication code sent successfully";
 
             return RedirectToAction("ResetPassword");
         }
@@ -393,7 +393,7 @@ namespace BM.Controllers
                 if (newPassword == confirmPassword)
                 {
                     ChangePassword(userId, newPassword);
-                    TempData["success"] = "Password reset successfully.";
+                    TempData["success"] = "Password changed succssefully.";
                     return RedirectToAction("login", "Account");
                 }
                 else
