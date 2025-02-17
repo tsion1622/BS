@@ -15,8 +15,6 @@ public partial class Shop
     [StringLength(50)]
     public string Name { get; set; }
 
-    public int? ShopRequestId { get; set; }
-
     public int UserId { get; set; }
 
     public int BusinessAreaId { get; set; }
@@ -24,6 +22,12 @@ public partial class Shop
     [Required]
     [StringLength(100)]
     public string Description { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime CreatedDate { get; set; }
+
+    [StringLength(250)]
+    public string ImagUrl { get; set; }
 
     public bool IsActive { get; set; }
 
@@ -34,11 +38,13 @@ public partial class Shop
     public virtual BusinessArea BusinessArea { get; set; }
 
     [InverseProperty("Shop")]
+    public virtual ICollection<ShopImage> ShopImages { get; set; } = new List<ShopImage>();
+
+    [InverseProperty("Shop")]
     public virtual ICollection<ShopItem> ShopItems { get; set; } = new List<ShopItem>();
 
-    [ForeignKey("ShopRequestId")]
-    [InverseProperty("Shops")]
-    public virtual ShopRequest ShopRequest { get; set; }
+    [InverseProperty("Shop")]
+    public virtual ICollection<ShopLocation> ShopLocations { get; set; } = new List<ShopLocation>();
 
     [ForeignKey("UserId")]
     [InverseProperty("Shops")]
