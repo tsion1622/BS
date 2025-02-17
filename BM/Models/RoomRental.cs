@@ -17,7 +17,8 @@ public partial class RoomRental
 
     public double TotalPrice { get; set; }
 
-    public DateOnly StartDate { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime StartDate { get; set; }
 
     public int BusinessAreaId { get; set; }
 
