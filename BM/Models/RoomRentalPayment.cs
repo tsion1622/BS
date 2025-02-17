@@ -17,7 +17,8 @@ public partial class RoomRentalPayment
 
     public int PaymentModeId { get; set; }
 
-    public DateOnly PaidDate { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime PaidDate { get; set; }
 
     public double TotalAmount { get; set; }
 
@@ -40,4 +41,7 @@ public partial class RoomRentalPayment
     [ForeignKey("RoomRentalId")]
     [InverseProperty("RoomRentalPayments")]
     public virtual RoomRental RoomRental { get; set; }
+
+    [InverseProperty("RoomRentalPayment")]
+    public virtual ICollection<RoomRentalPaymentDetail> RoomRentalPaymentDetails { get; set; } = new List<RoomRentalPaymentDetail>();
 }
