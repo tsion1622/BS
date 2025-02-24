@@ -4,6 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
+<!-- New feature to display total count of buildings -->
+<h2>Total Buildings: @Model.Count()</h2>
+
 <table class="table">
     <thead>
         <tr>
@@ -14,7 +17,6 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-
             </th>
         </tr>
     </thead>
@@ -29,7 +31,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    <a asp-action="Details"  asp-action="BuildingList"  asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Details" asp-action="BuildingList" asp-route-id="@item.Id">Details</a> |
                 </td>
             </tr>
         }
