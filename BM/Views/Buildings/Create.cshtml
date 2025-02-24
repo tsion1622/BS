@@ -1,103 +1,24 @@
-﻿@model BM.Models.Building
-
-@{
-    ViewData["Title"] = "Create";
-}
-
-<h1>Create</h1>
-
-<a asp-action="Create" asp-controller="Buildings" data-bs-toggle="modal" data-bs-target="#modal_read">
-    create
-</a>
-<div class="modal fade" id="modal_read" tabindex="-1" aria-labelledby="modal_readLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modal_readLabel">Create buildings</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="mes"></div>
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="UseTypeId" class="control-label"></label>
-                    <select asp-for="UseTypeId" class="form-control" asp-items="ViewBag.UseTypeId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="UserId" class="control-label"></label>
-                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="CityId" class="control-label"></label>
-                    <select asp-for="CityId" class="form-control" asp-items="ViewBag.CityId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="LocationId" class="control-label"></label>
-                    <select asp-for="LocationId" class="form-control" asp-items="ViewBag.LocationId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ConstractionYear" class="control-label"></label>
-                    <input asp-for="ConstractionYear" class="form-control" />
-                    <span asp-validation-for="ConstractionYear" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="NumberOfFloor" class="control-label"></label>
-                    <input asp-for="NumberOfFloor" class="form-control" />
-                    <span asp-validation-for="NumberOfFloor" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="BuildingTypeId" class="control-label"></label>
-                    <select asp-for="BuildingTypeId" class="form-control" asp-items="ViewBag.BuildingTypeId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="OwnershipTypeId" class="control-label"></label>
-                    <select asp-for="OwnershipTypeId" class="form-control" asp-items="ViewBag.OwnershipTypeId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="OwnerId" class="control-label"></label>
-                    <select asp-for="OwnerId" class="form-control" asp-items="ViewBag.OwnerId"></select>
-                </div>
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                    </label>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-
-            <div class="modal-footer">
-                <a asp-action="Create" asp-controller="Buildings">
-                    Save
-                </a>
-                <button type="button" onclick="Reload()" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
+﻿<!-- Added a Simple Navigation Bar at the Top -->
+<nav class="navbar navbar-light bg-light mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Building Management System</a>
+        <span class="navbar-text">
+            Create a new building record
+        </span>
     </div>
+</nav>
+
+<!-- Added a Decorative Header to Make the Title Stand Out -->
+<h1 class="text-center text-primary mb-4">Create a New Building</h1>
+
+<!-- Added an Alert for User Guidance -->
+<div class="alert alert-info text-center" role="alert">
+    Please fill in the details below to create a new building entry.
 </div>
-<h4>Building</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-      
+
+<!-- Added a Footer for Additional Information -->
+<footer class="text-center mt-4 py-4 bg-light">
+    <div class="container">
+        <span class="text-muted">© 2023 Building Management System. All rights reserved.</span>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+</footer>
