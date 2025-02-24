@@ -1,18 +1,38 @@
-﻿@model IEnumerable<BM.Models.Building> 
-@{
-    ViewData["Title"] = "Index";
-}
-<h1 class=" my-4 mtb-2">BMS</h1>
-@if (TempData["info"] != null)
-{ <div class="alert alert-info text-center" role="alert">
-        @TempData["info"]
+﻿<!-- Added Navbar Section for Better Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Building Management System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
-}
-<div class="d-flex justify-content-end mb-1">
-    <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#createBuildingModal">
-        Create Building
-    </button>
+</nav>
+
+<!-- Added Call-to-Action Section -->
+<div class="alert alert-success text-center mb-4" role="alert">
+    Welcome to the Building Management System! Manage your buildings effortlessly.
 </div>
+
+<!-- Add Footer at the bottom of the page -->
+<footer class="text-center mt-4 py-4">
+    <div class="container">
+        <span class="text-muted">© 2023 Building Management System. All rights reserved.</span>
+    </div>
+</footer>
+
 <div class="modal fade" id="createBuildingModal" tabindex="-1" aria-labelledby="createBuildingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content shadow-lg border-0 rounded-3">
@@ -23,7 +43,7 @@
             <div class="modal-body bg-light px-4 py-3">
                 <form asp-action="AddBuilding" asp-controller="Buildings">
                     <div class="row g-3">
-                      
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="UseTypeId" class="form-label fw-semibold">Use Type</label>
@@ -46,7 +66,7 @@
                                 <select name="BuildingTypeId" id="BuildingTypeId" class="form-control form-select shadow-sm" required="" asp-items="ViewBag.BuildingTypeId"></select>
                             </div>
                         </div>
-                       
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="OwnerShipTypeId" class="form-label fw-semibold">Ownership Type</label>
@@ -56,7 +76,7 @@
                                 <label for="OwnerId" class="form-label fw-semibold">Owner</label>
                                 <select name="OwnerId" id="OwnerId" class="form-control form-select shadow-sm" required="" asp-items="ViewBag.OwnerId"></select>
                             </div>
-                           
+
                             <div class="form-group">
                                 <label for="NumberOfFloor" class="form-label fw-semibold">Number of Floors</label>
                                 <input name="NumberOfFloor" id="NumberOfFloor" type="number" class="form-control shadow-sm" placeholder="Enter number of floors" required="" />
@@ -82,69 +102,6 @@
     </div>
 </div>
 
-<div class="table-responsive mt-2">
-    <table class="table table-bordered table-hover align-middle shadow-sm rounded">
-        <thead class="table-dark">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.Name)</th>
-                <th>@Html.DisplayNameFor(model => model.Description)</th>
-                <th>@Html.DisplayNameFor(model => model.NumberOfFloor)</th>
-                <th>@Html.DisplayNameFor(model => model.BuildingType)</th>
-                <th>@Html.DisplayNameFor(model => model.City)</th>
-                <th>@Html.DisplayNameFor(model => model.ConstractionYear)</th>
-                <th class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr class="hoverable-row">
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                    <td>@Html.DisplayFor(modelItem => item.NumberOfFloor)</td>
-                    <td>@Html.DisplayFor(modelItem => item.BuildingType.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.City.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.ConstractionYear)</td>
-                    <td class="text-center">
-
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Menu
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li>
-                                    <button type="button"
-                                            class="btn btn-outline-warning btn-sm w-100"
-                                            data-bs-target="#editBuildingModal"
-                                            onclick="openEditBuildingModal('@item.Id', '@item.Name', '@item.BuildingTypeId', '@item.OwnerId',
-                '@item.OwnershipTypeId', '@item.CityId', '@item.LocationId', '@item.UseTypeId', '@item.NumberOfFloor')">
-                                        Edit
-                                    </button>
-                                </li>
-                                <li>
-                                    <a class="btn btn-outline-success btn-sm w-100"
-                                       asp-action="Details"
-                                       asp-route-id="@item.Id">
-                                        <i class="bi bi-eye"></i> Details
-                                    </a>
-                                </li>
-                                <li>
-                                    <button class="btn btn-outline-danger btn-sm w-100"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteBuilding"
-                                            onclick="setDeleteBuildingId('@item.Id')">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                           
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
 
 <div class="modal fade" id="editBuildingModal" tabindex="-1" aria-labelledby="editBuildingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
