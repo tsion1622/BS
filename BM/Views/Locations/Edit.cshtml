@@ -6,6 +6,11 @@
 
 <h1>Edit</h1>
 
+<!-- New Alert Banner -->
+<div class="alert alert-warning" role="alert">
+    You are currently editing an existing location. Please ensure all details are correct.
+</div>
+
 <h4>Location</h4>
 <hr />
 <div class="row">
@@ -46,9 +51,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a> <!-- Styled Back button -->
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
