@@ -6,6 +6,11 @@
 
 <h1>Create</h1>
 
+<!-- New Alert Banner -->
+<div class="alert alert-info" role="alert">
+    Please fill in the details below to create a new item.
+</div>
+
 <h4>Item</h4>
 <hr />
 <div class="row">
@@ -23,7 +28,7 @@
             </div> *@
             <div class="form-group">
                 <label asp-for="ItemCategoryId" class="control-label"></label>
-                <select asp-for="ItemCategoryId" class ="form-control" asp-items="ViewBag.ItemCategoryId"></select>
+                <select asp-for="ItemCategoryId" class="form-control" asp-items="ViewBag.ItemCategoryId"></select>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -43,9 +48,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a> <!-- Styled button -->
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
