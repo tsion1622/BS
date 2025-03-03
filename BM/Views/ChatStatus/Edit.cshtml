@@ -30,6 +30,7 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="button" value="Reset" class="btn btn-secondary" onclick="resetForm()" />
             </div>
         </form>
     </div>
@@ -40,5 +41,13 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function resetForm() {
+            const form = document.querySelector('form');
+            form.reset(); // Resets the form fields to their default values
+        }
+    </script>
 }
