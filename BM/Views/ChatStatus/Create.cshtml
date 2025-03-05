@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" placeholder="Enter chat status name" title="Please enter the name for the ChatStatus" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -23,7 +23,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary btn-lg" />
                 <input type="button" value="Reset" class="btn btn-secondary" onclick="resetForm();" />
             </div>
         </form>
@@ -31,7 +31,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-link">Back to List</a>
 </div>
 
 @section Scripts {
@@ -44,3 +44,23 @@
         }
     </script>
 }
+
+<style>
+    /* New styles for the Create page */
+    .form-group {
+        margin-bottom: 15px; /* Add more spacing between form groups */
+    }
+
+    .btn-lg {
+        width: 100%; /* Make the create button full-width */
+        margin-bottom: 10px; /* Add space below the Create button */
+    }
+
+    .btn-link {
+        text-decoration: none; /* Remove underline from the Back to List link */
+    }
+
+        .btn-link:hover {
+            text-decoration: underline; /* Underline on hover for better user feedback */
+        }
+</style>
