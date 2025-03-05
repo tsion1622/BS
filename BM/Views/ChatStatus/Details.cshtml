@@ -31,7 +31,7 @@
     </dl>
 
     <!-- Additional details section -->
-    <button onclick="toggleAdditionalDetails()">Show Additional Details</button>
+    <button class="btn btn-info" onclick="toggleAdditionalDetails()">Show Additional Details</button>
     <div id="additionalDetails" style="display:none;">
         <h5>Additional Information</h5>
         <p>This section could contain extra information about the ChatStatus, if available.</p>
@@ -39,8 +39,8 @@
     </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary" onclick="return confirm('Are you sure you want to go back to the list?')">Back to List</a>
 </div>
 
 @section Scripts {
@@ -55,3 +55,18 @@
         }
     </script>
 }
+
+<style>
+    /* New styles for additional button and link */
+    .btn-info {
+        margin-top: 10px; /* Add space above the button */
+    }
+
+    .dl-row .col-sm-2 {
+        font-weight: bold; /* Make the labels bold for better distinction */
+    }
+
+    .dl-row .col-sm-10 {
+        line-height: 1.5; /* Improve line height for readability */
+    }
+</style>
