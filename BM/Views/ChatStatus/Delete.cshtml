@@ -34,7 +34,7 @@
     <form asp-action="Delete" onsubmit="return confirmDelete();">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </form>
 </div>
 
@@ -45,3 +45,27 @@
         }
     </script>
 }
+
+<style>
+    /* New styles for confirmation page */
+    h3 {
+        color: #dc3545; /* Set the heading color to Bootstrap's danger color */
+    }
+
+    dl.row {
+        margin-bottom: 20px; /* Increase spacing below the description list */
+    }
+
+    .btn-danger {
+        margin-right: 10px; /* Add margin to separate the delete button from the list button */
+    }
+
+    .btn-secondary {
+        text-decoration: none; /* Remove underline from the Back to List link */
+    }
+
+        .btn-secondary:hover {
+            background-color: #6c757d; /* Darker color on hover for better visibility */
+            color: white; /* Ensure the text is visible when hovering */
+        }
+</style>
