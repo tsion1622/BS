@@ -8,6 +8,9 @@
 
 <h4>TenantType</h4>
 <hr />
+<div class="alert alert-info" role="alert">
+    Please make the necessary changes and click "Save" to update the Tenant Type.
+</div>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
@@ -40,5 +43,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
