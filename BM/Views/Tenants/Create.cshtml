@@ -13,26 +13,26 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <label asp-for="Name" class="control-label" title="Enter the tenant's name."></label>
+                <input asp-for="Name" class="form-control" title="Enter the tenant's name." />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <label asp-for="Description" class="control-label" title="Provide a brief description of the tenant."></label>
+                <input asp-for="Description" class="form-control" title="Provide a brief description of the tenant." />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Contact" class="control-label"></label>
-                <input asp-for="Contact" class="form-control" />
+                <label asp-for="Contact" class="control-label" title="Enter a contact number for the tenant."></label>
+                <input asp-for="Contact" class="form-control" title="Enter a contact number for the tenant." />
                 <span asp-validation-for="Contact" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TenantTypeId" class="control-label"></label>
-                <select asp-for="TenantTypeId" class ="form-control" asp-items="ViewBag.TenantTypeId"></select>
+                <label asp-for="TenantTypeId" class="control-label" title="Select the type of tenant."></label>
+                <select asp-for="TenantTypeId" class="form-control" asp-items="ViewBag.TenantTypeId" title="Select the type of tenant."></select>
             </div>
             <div class="form-group form-check">
-                <label class="form-check-label">
+                <label class="form-check-label" title="Mark if the tenant is deleted.">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
@@ -48,5 +48,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
