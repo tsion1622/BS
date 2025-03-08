@@ -6,6 +6,11 @@
 
 <h1>Edit</h1>
 
+<!-- New Alert Section -->
+<div class="alert alert-warning" role="alert">
+    You are editing the details for the selected Chat Version. Please make your changes below.
+</div>
+
 <h4>ChatVersion</h4>
 <hr />
 <div class="row">
@@ -50,5 +55,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
