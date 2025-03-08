@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<BM.Models.City>
 
-
 @{
     ViewData["Title"] = "Index";
 }
@@ -21,28 +20,34 @@
             @* <th>
                 @Html.DisplayNameFor(model => model.IsDeleted)
             </th> *@
-           @*  <th></th> *@
+            @*  <th></th> *@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Where(c => c.IsDeleted==false)) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-           @*  <td>
+        @foreach (var item in Model.Where(c => c.IsDeleted == false))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                @*  <td>
                 @Html.DisplayFor(modelItem => item.IsDeleted)
             </td> *@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-               
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2" class="text-right"><strong>Total Active Cities:</strong></td>
+            <td>@Model.Count(c => c.IsActive && !c.IsDeleted)</td>
+        </tr>
+    </tfoot>
 </table>
