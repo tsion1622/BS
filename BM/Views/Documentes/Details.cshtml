@@ -29,29 +29,27 @@
             @Html.DisplayFor(model => model.IsDeleted)
         </dd>
 
-        <!-- New Upload Date Display -->
+        <!-- Display Upload Date -->
         <dt class="col-sm-2">
             Upload Date
         </dt>
         <dd class="col-sm-10">
-           @*  @Html.DisplayFor(model => model.UploadDate)  *@
-           
+            @Html.DisplayFor(model => model.UploadDate) <!-- Assuming UploadDate is a DateTime property -->
         </dd>
 
-        <!-- New File Preview Link -->
+        <!-- Display File Preview Link -->
         <dt class="col-sm-2">
             Associated File
         </dt>
         <dd class="col-sm-10">
-           @*  @if (Model.FilePath != null)
+            @if (!string.IsNullOrEmpty(Model.FilePath)) // Check if FilePath is not null or empty
             {
-                <!-- Assuming FilePath is a property of the Documente model -->
                 <a href="@Url.Content(Model.FilePath)" target="_blank">View File</a>
             }
             else
             {
                 <span>No file uploaded.</span>
-            } *@
+            }
         </dd>
     </dl>
 </div>
