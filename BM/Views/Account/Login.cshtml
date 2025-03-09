@@ -8,12 +8,7 @@
     @TempData["error"]
 }
 
-@* @if (Context.Session.GetString("FirstName")!= null)
-{
-    <h4>
-        Welcome @Context.Session.GetString("FirstName")
-    </h4>
-} *@
+
 @if (TempData["Success"]!= null)
 {
     <div class="alert alert-primary" role="alert">
