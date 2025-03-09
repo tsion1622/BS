@@ -24,12 +24,12 @@
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
-                <label class="form-check-label">
+                <label class="form-check-label" title="Whether this category is active or not.">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
             </div>
             <div class="form-group form-check">
-                <label class="form-check-label">
+                <label class="form-check-label" title="Check this if the category is deleted.">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
@@ -45,5 +45,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
