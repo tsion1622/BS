@@ -55,5 +55,14 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a> |
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a> |
+    <button class="btn btn-info" onclick="printDetails()">Print</button>
 </div>
+
+@section Scripts {
+    <script>
+        function printDetails() {
+            window.print();
+        }
+    </script>
+}
