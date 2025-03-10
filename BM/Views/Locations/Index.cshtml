@@ -14,25 +14,25 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a> <!-- Styled button -->
 </p>
-<table class="table">
+<table class="table table-responsive">
     <thead>
         <tr>
-            <th>
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.Coordinates)
             </th>
-            <th>
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.IsActive)
             </th>
-            <th>
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.IsDeleted)
             </th>
-            <th>
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.City)
             </th>
-            <th></th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -46,10 +46,10 @@
                     @Html.DisplayFor(modelItem => item.Coordinates)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
+                    @Html.DisplayFor(modelItem => item.IsActive) ? "Yes" : "No"
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                    @Html.DisplayFor(modelItem => item.IsDeleted) ? "Yes" : "No"
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.City.Name)
