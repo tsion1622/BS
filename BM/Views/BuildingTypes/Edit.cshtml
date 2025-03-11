@@ -29,10 +29,10 @@
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
-            <!-- Added file upload input -->
+            <!-- Added file upload input with new class -->
             <div class="form-group">
                 <label for="FileUpload">Upload File</label>
-                <input type="file" name="FileUpload" class="form-control" />
+                <input type="file" name="FileUpload" class="form-control file-upload" /> <!-- Added a new CSS class 'file-upload' -->
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
