@@ -35,10 +35,17 @@
     </div>
 </div>
 
+<!-- Added Last Edited Timestamp -->
+<div class="text-muted mt-3">
+    <p>Last Edited: @Model.LastModified.ToString("MMMM dd, yyyy hh:mm tt")</p>
+</div>
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
