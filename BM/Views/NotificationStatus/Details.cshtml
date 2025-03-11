@@ -10,23 +10,36 @@
     <h4>NotificationStatus</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsActive)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsActive)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsDeleted)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+        <!-- Added Creation and Last Modified Dates -->
+        <dt class="col-sm-2">
+            Created Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model?.CreatedDate.ToString("MMMM dd, yyyy hh:mm tt")
+        </dd>
+        <dt class="col-sm-2">
+            Last Modified Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model?.LastModifiedDate.ToString("MMMM dd, yyyy hh:mm tt")
         </dd>
     </dl>
 </div>
