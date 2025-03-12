@@ -39,6 +39,31 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<!-- New styles for the Edit page -->
+<style>
+    h1, h4 {
+        color: #333;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        margin-top: 10px;
+    }
+
+    .text-danger {
+        font-weight: bold;
+    }
+
+    .form-check-label {
+        margin-left: 5px;
+    }
+</style>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
