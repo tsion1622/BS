@@ -4,48 +4,48 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>Delete Room Property</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this item?</h3>
 <div>
-    <h4>RoomProperty</h4>
+    <h4>Room Property Details</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Value)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Value)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.IsActive)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.IsActive)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.IsDeleted)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.IsDeleted)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Room)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Room.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.RoomPropertyType)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.RoomPropertyType.Name)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
+
+    <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </form>
 </div>
