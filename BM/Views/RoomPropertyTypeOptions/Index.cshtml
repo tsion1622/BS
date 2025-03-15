@@ -49,9 +49,9 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.IsDeleted)
                     </td>
-                    <td>
+                    @* <td>
                         @Html.DisplayFor(modelItem => item.RoomPropertyType?.Name) <!-- Using null conditional operator -->
-                    </td>
+                    </td> *@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
@@ -61,4 +61,11 @@
             }
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="5" class="text-right">
+                Total Room Property Type Options: @Model.Count()
+            </td>
+        </tr>
+    </tfoot>
 </table>
