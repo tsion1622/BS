@@ -1,15 +1,15 @@
 ﻿@model BM.Models.RoomPropertyType
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Room Property Type";
 }
 
-<h1>Create</h1>
+<h1>Create Room Property Type</h1>
 
-<h4>RoomPropertyType</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
+        <h4>Add New Room Property Type</h4>
+        <hr />
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -30,9 +30,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a> <!-- Styled as a button -->
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
