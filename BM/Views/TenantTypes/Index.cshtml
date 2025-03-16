@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
-<table class="table">
+<table class="table custom-table">
     <thead>
         <tr>
             <th>
@@ -46,3 +46,9 @@
         }
     </tbody>
 </table>
+
+<style>
+    .custom-table thead {
+        background-color: #f8f9fa; /* Light grey background for the header */
+    }
+</style>
