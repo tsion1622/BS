@@ -4,45 +4,45 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Building Type</h1>
 
-<h4>BuildingType</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6"> <!-- Increased width for a better layout -->
         <form asp-action="Edit" enctype="multipart/form-data">
-            <!-- Added enctype for file uploads -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" placeholder="Enter Building Type Name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    <input class="form-check-input" asp-for="IsActive" /> 
+                    @Html.DisplayNameFor(model => model.IsActive) (Check to activate)
                 </label>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                    <input class="form-check-input" asp-for="IsDeleted" /> 
+                    @Html.DisplayNameFor(model => model.IsDeleted) (Check to mark as deleted)
                 </label>
             </div>
-            <!-- Added file upload input with new class -->
             <div class="form-group">
-                <label for="FileUpload">Upload File</label>
-                <input type="file" name="FileUpload" class="form-control file-upload" /> <!-- Added a new CSS class 'file-upload' -->
+                <label for="FileUpload">Upload File (optional)</label>
+                <input type="file" name="FileUpload" class="form-control file-upload" />
+                <small class="form-text text-muted">Supported formats: .pdf, .docx, .xlsx</small> <!-- Added guidance on file upload -->
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Update Building Type" class="btn btn-primary" /> <!-- More descriptive button text -->
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a> <!-- Added button styling for consistency -->
 </div>
 
 @section Scripts {
