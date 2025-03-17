@@ -6,55 +6,62 @@
 
 <h1>Create</h1>
 
-<h4>BuildingEmployee</h4>
+<h4>Create a new Building Employee</h4>
 <hr />
 <div class="card">
     <div class="card-header">
-        Create a new Building Employee
+        <strong>Building Employee Details</strong>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-4">
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="FullName" class="control-label"></label>
-                        <input asp-for="FullName" class="form-control" />
+                        <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
                         <span asp-validation-for="FullName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="PhoneNumber" class="control-label"></label>
-                        <input asp-for="PhoneNumber" class="form-control" />
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number" />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="BuildingId" class="control-label"></label>
-                        <select asp-for="BuildingId" class="form-control" asp-items="ViewBag.BuildingId"></select>
+                        <select asp-for="BuildingId" class="form-control" asp-items="ViewBag.BuildingId">
+                            <option value="">Select Building</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label asp-for="UserId" class="control-label"></label>
-                        <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                        <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId">
+                            <option value="">Select User</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label asp-for="EmployeeTypeId" class="control-label"></label>
-                        <select asp-for="EmployeeTypeId" class="form-control" asp-items="ViewBag.EmployeeTypeId"></select>
+                        <select asp-for="EmployeeTypeId" class="form-control" asp-items="ViewBag.EmployeeTypeId">
+                            <option value="">Select Employee Type</option>
+                        </select>
                     </div>
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                            <input class="form-check-input" asp-for="IsDeleted" />
+                            @Html.DisplayNameFor(model => model.IsDeleted)
                         </label>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Create" class="btn btn-primary btn-block" />
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {
