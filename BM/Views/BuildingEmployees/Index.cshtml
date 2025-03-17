@@ -6,10 +6,15 @@
 
 <h1>Index</h1>
 
+<!-- New Search Section -->
+<div class="mb-3">
+    <input type="text" id="searchBar" class="form-control" placeholder="Search by Full Name" onkeyup="filterTable()" />
+</div>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table table-striped">
+<table class="table table-striped" id="employeeTable">
     <thead>
         <tr>
             <th>
@@ -70,3 +75,20 @@
         }
     </tbody>
 </table>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById("searchBar");
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById("employeeTable");
+        const tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) { // start from 1 to skip header
+            const td = tr[i].getElementsByTagName("td")[0]; // check Full Name column
+            if (td) {
+                const txtValue = td.textContent || td.innerText;
+                tr[i].style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+</script>
