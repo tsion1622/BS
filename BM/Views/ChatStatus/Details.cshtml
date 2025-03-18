@@ -35,7 +35,7 @@
     <div id="additionalDetails" style="display:none;">
         <h5>Additional Information</h5>
         <p>This section could contain extra information about the ChatStatus, if available.</p>
-        <!-- You may replace the above text with @Html@* .DisplayFor(model => model.Description) *@ or any other property -->
+        <!-- You may replace the above text with @Html.DisplayFor(model => model.Description) or any other property -->
     </div>
 </div>
 <div>
@@ -47,11 +47,7 @@
     <script>
         function toggleAdditionalDetails() {
             var additionalDetails = document.getElementById("additionalDetails");
-            if (additionalDetails.style.display === "none") {
-                additionalDetails.style.display = "block";
-            } else {
-                additionalDetails.style.display = "none";
-            }
+            additionalDetails.style.display = (additionalDetails.style.display === "none") ? "block" : "none";
         }
     </script>
 }
@@ -68,5 +64,9 @@
 
     .dl-row .col-sm-10 {
         line-height: 1.5; /* Improve line height for readability */
+    }
+
+    h5 {
+        margin-top: 20px; /* Add margin to the heading of additional details */
     }
 </style>
