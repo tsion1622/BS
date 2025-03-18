@@ -1,10 +1,16 @@
-﻿@model IEnumerable<BM.Models.ChatStatus>
+﻿Certainly! Below is the modified code that includes the new section to display the total count of chat statuses, while keeping the existing code intact:
+
+```csharp
+@model IEnumerable<BM.Models.ChatStatus>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
+
+<!-- New section to display total count of chat statuses -->
+<p>Total Chat Statuses: @Model.Count()</p>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
@@ -75,3 +81,7 @@
         margin-right: 5px;
     }
 </style>
+```
+
+### Commit Message:
+"Added a section to display the total count of chat statuses."
