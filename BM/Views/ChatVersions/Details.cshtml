@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Chat Version Details</h1>
 
 <!-- New Alert Section -->
 <div class="alert alert-info" role="alert">
@@ -12,7 +12,7 @@
 </div>
 
 <div>
-    <h4>ChatVersion</h4>
+    <h4>Chat Version Information</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -47,7 +47,8 @@
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
