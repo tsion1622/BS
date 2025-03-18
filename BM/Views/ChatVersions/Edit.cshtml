@@ -4,17 +4,17 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Chat Version</h1>
 
 <!-- New Alert Section -->
 <div class="alert alert-warning" role="alert">
     You are editing the details for the selected Chat Version. Please make your changes below.
 </div>
 
-<h4>ChatVersion</h4>
+<h4>ChatVersion Details</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -25,12 +25,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
+                <input asp-for="Date" class="form-control" type="datetime-local" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="OldMessage" class="control-label"></label>
-                <input asp-for="OldMessage" class="form-control" />
+                <textarea asp-for="OldMessage" class="form-control" rows="4" placeholder="Enter the old message here..."></textarea>
                 <span asp-validation-for="OldMessage" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -45,13 +45,10 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
