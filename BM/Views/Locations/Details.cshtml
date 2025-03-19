@@ -1,54 +1,56 @@
 ﻿@model BM.Models.Location
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Location Details";
 }
 
-<h1>Details</h1>
+<h1>Location Details</h1>
 
 <!-- New Alert Banner -->
 <div class="alert alert-info" role="alert">
-    Below are the details of the selected location.
+    Below are the details of the selected location. If you identify any inaccuracies, please contact support.
 </div>
 
-<div>
-    <h4>Location</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Coordinates)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Coordinates)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsActive) ? "Yes" : "No"
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted) ? "Yes" : "No"
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.City.Name)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-body">
+        <h4>Location Information</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Coordinates)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Coordinates)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.IsActive)
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.IsActive ? "Yes" : "No")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.IsDeleted ? "Yes" : "No")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.City)
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.City != null ? Html.DisplayFor(model => model.City.Name) : "N/A")
+            </dd>
+        </dl>
+    </div>
 </div>
 
-<div>
+<div class="mt-3">
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a> <!-- Styled Edit button -->
     <a asp-action="Index" class="btn btn-secondary">Back to List</a> <!-- Styled Back button -->
 </div>
