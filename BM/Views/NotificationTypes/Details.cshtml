@@ -31,6 +31,14 @@
     </dl>
 </div>
 
+<!-- New Section: Description -->
+<div>
+    <h4>Description</h4>
+    <p>
+        @Html.DisplayFor(model => model.Description) <!-- assuming that the NotificationType model has a Description property -->
+    </p>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-secondary">Edit</a> |
     <a asp-action="Index" class="btn btn-primary">Back to List</a>
@@ -52,5 +60,10 @@
 
     .btn {
         margin-right: 5px; /* Add spacing between buttons */
+    }
+
+    .description {
+        font-style: italic; /* New style for description text */
+        color: #555; /* New color for description text */
     }
 </style>
