@@ -1,44 +1,59 @@
 ﻿@model BM.Models.ItemEntryVaration
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Item Variation";
 }
 
-<h1>Create</h1>
+<h1>Create Item Variation</h1>
 
-<h4>ItemEntryVaration</h4>
+<h4>Item Variation Details</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="VarationTypeId" class="control-label"></label>
-                <select asp-for="VarationTypeId" class ="form-control" asp-items="ViewBag.VarationTypeId"></select>
+                <label asp-for="VarationTypeId" class="control-label">Variation Type</label>
+                <select asp-for="VarationTypeId" class="form-control" asp-items="ViewBag.VarationTypeId">
+                    <option value="">Select Variation Type...</option> <!-- Placeholder -->
+                </select>
+                <span asp-validation-for="VarationTypeId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="VarationId" class="control-label"></label>
-                <select asp-for="VarationId" class ="form-control" asp-items="ViewBag.VarationId"></select>
+                <label asp-for="VarationId" class="control-label">Variation</label>
+                <select asp-for="VarationId" class="form-control" asp-items="ViewBag.VarationId">
+                    <option value="">Select Variation...</option> <!-- Placeholder -->
+                </select>
+                <span asp-validation-for="VarationId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="ItemEntryId" class="control-label"></label>
-                <select asp-for="ItemEntryId" class ="form-control" asp-items="ViewBag.ItemEntryId"></select>
+                <label asp-for="ItemEntryId" class="control-label">Item Entry</label>
+                <select asp-for="ItemEntryId" class="form-control" asp-items="ViewBag.ItemEntryId">
+                    <option value="">Select Item Entry...</option> <!-- Placeholder -->
+                </select>
+                <span asp-validation-for="ItemEntryId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
+                <label asp-for="Quantity" class="control-label">Quantity</label>
+                <input asp-for="Quantity" class="form-control" type="number" min="0" required /> <!-- Added validations -->
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <label asp-for="Price" class="control-label">Price</label>
+                <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" required /> <!-- Added validations -->
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
+                <input class="form-check-input" asp-for="IsDeleted" />
+                <label class="form-check-label" asp-for="IsDeleted">Mark as Deleted?</label>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -51,5 +66,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
