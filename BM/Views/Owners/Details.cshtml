@@ -1,17 +1,17 @@
 ﻿@model BM.Models.Owner
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Owner Details";
 }
 
-<h1>Details</h1>
+<h1>Owner Details</h1>
 
 <div class="alert alert-info" role="alert">
     You are viewing the details of the selected owner. This information is read-only.
 </div>
 
 <div>
-    <h4>Owner</h4>
+    <h4>Owner Information</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -30,41 +30,42 @@
             @Html.DisplayNameFor(model => model.Verified)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Verified)
+            @(Model.Verified ? "Yes" : "No") <!-- Improved boolean display -->
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RegisteredDate)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RegisteredDate)
+            @Html.DisplayFor(model => model.RegisteredDate.ToString("yyyy-MM-dd")) <!-- Optional date formatting -->
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsActive)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
+            @(Model.IsActive ? "Yes" : "No") <!-- Improved boolean display -->
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsDeleted)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
+            @(Model.IsDeleted ? "Yes" : "No") <!-- Improved boolean display -->
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Document)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Document.Name)
+            @(Model.Document != null ? Html.DisplayFor(model => model.Document.Name) : "N/A") <!-- Null check for Document -->
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.OwnershipType)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OwnershipType.Description)
+            @Html.DisplayFor(model => model.OwnershipType?.Description) <!-- Null-safe display for OwnershipType -->
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a> | <!-- Styled Edit button -->
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a> <!-- Styled Back button -->
 </div>
