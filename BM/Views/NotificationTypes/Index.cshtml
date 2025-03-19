@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<BM.Models.NotificationType>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Notification Types";
 }
 
-<h1>Index</h1>
+<h1>Notification Types</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
@@ -35,39 +35,48 @@
     }
 </style>
 
-<table class="table">
+<table class="table" role="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
+        <tr role="row">
+            <th role="columnheader">
+                Name
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
+            <th role="columnheader">
+                Active
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
+            <th role="columnheader">
+                Deleted
             </th>
-            <th></th>
+            <th role="columnheader"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr role="row">
+                    <td role="cell">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td role="cell">
+                        @(item.IsActive ? "Yes" : "No") <!-- User-friendly display -->
+                    </td>
+                    <td role="cell">
+                        @(item.IsDeleted ? "Yes" : "No") <!-- User-friendly display -->
+                    </td>
+                    <td role="cell">
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsDeleted)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <td colspan="4" class="text-center">No Notification Types available.</td>
             </tr>
         }
     </tbody>
