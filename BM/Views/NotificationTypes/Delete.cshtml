@@ -33,7 +33,7 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="This action cannot be undone!">Delete</button>
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </form>
 </div>
@@ -56,3 +56,10 @@
         margin-right: 5px; /* Add spacing between buttons */
     }
 </style>
+
+<!-- Include Bootstrap's JavaScript if not already included for tooltip functionality -->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
