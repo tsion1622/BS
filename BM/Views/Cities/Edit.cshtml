@@ -15,7 +15,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <!-- Added enctype for file upload -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -33,6 +34,14 @@
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
+
+            <!-- New Image Upload Section -->
+            <div class="form-group">
+                <label asp-for="CityImage" class="control-label">Upload Image</label>
+                <input type="file" asp-for="CityImage" class="form-control" />
+                <span asp-validation-for="CityImage" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
