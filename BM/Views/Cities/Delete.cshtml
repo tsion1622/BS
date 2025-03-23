@@ -34,6 +34,21 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsDeleted)
         </dd>
+
+        <!-- New City Image Section -->
+        <dt class="col-sm-2">
+            City Image
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.CityImageUrl != null)  <!-- Assuming there is a property called CityImageUrl -->
+            {
+                <img src="@Model.CityImageUrl" alt="Image of @Model.Name" class="img-fluid" style="max-width:300px;" />
+            }
+            else
+            {
+                <span>No image available</span>
+            }
+        </dd>
     </dl>
 
     <form asp-action="Delete">
