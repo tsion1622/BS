@@ -4,27 +4,43 @@
     ViewData["Title"] = "Create";
 }
 
-@ViewBag.CityName
-@* <h4></h4> *@
-@* <hr /> *@
 <div class="card">
     <div class="card-header">
         <h1>Create City</h1>
     </div>
-    <form asp-action="Create">
+    <form asp-action="Create" enctype="multipart/form-data">
+        <!-- Add enctype for file upload -->
         <div class="card-body">
             <div class="col-md-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
                     <input asp-for="Name" class="form-control" data-toggle="tooltip" title="Enter the name of the city" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                @* <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                    </label>
-                </div> *@
+
+                <!-- Optional: Add country/region selection -->
+                <div class="form-group">
+                    <label asp-for="Country" class="control-label"></label> <!-- Assuming you have a Country property -->
+                    <select asp-for="Country" class="form-control" data-toggle="tooltip" title="Select the country the city belongs to">
+                        <option value="">Select Country</option>
+                        @* Populate this with actual country data, e.g., from a ViewBag or list *@
+                        @foreach (var country in ViewBag.Countries) // Make sure you pass a list of countries from the controller
+                        {
+                            <option value="@country">@country</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+
+                <!-- Optional: Add city image upload -->
+                <div class="form-group">
+                    <label asp-for="Image" class="control-label"></label> <!-- Assuming there is an Image property -->
+                    <input asp-for="Image" type="file" class="form-control" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
             </div>
         </div>
         <div class="card-footer">
