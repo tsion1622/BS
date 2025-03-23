@@ -10,23 +10,38 @@
     <h4>City</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsActive)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsActive)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsDeleted)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+
+        <!-- New Image Display Section -->
+        <dt class="col-sm-2">
+            City Image
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.CityImageUrl != null)  <!-- Assuming there is a property called CityImageUrl -->
+            {
+                <img src="@Model.CityImageUrl" alt="Image of @Model.Name" class="img-fluid" style="max-width:300px;" />
+            }
+            else
+            {
+                <span>No image available</span>
+            }
         </dd>
     </dl>
 </div>
