@@ -37,36 +37,38 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
-        <tr class="@(item.IsDeleted ? "table-danger" : "")"> <!-- Highlight deleted rows -->
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @(item.IsActive ? "Yes" : "No") <!-- More user-friendly output -->
-            </td>
-            <td>
-                @(item.IsDeleted ? "Yes" : "No") <!-- More user-friendly output -->
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ItemEntry.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Varation.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VarationType.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" 
-                   onclick="return confirm('Are you sure you want to delete this item?');">Delete</a> <!-- Confirmation before deletion -->
-            </td>
-        </tr>
-    }
+        @foreach (var item in Model)
+        {
+            <tr class="@(item.IsDeleted ? "table-danger" : "")">
+                <!-- Highlight deleted rows -->
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @(item.IsActive ? "Yes" : "No") <!-- More user-friendly output -->
+                </td>
+                <td>
+                    @(item.IsDeleted ? "Yes" : "No") <!-- More user-friendly output -->
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemEntry.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Varation.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VarationType.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"
+                       onclick="return confirm('Are you sure you want to delete this item?');">Delete</a> <!-- Confirmation before deletion -->
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
