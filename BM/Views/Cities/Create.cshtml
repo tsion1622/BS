@@ -21,25 +21,25 @@
                 </div>
 
                 <!-- Optional: Add country/region selection -->
-                <div class="form-group">
+             @*    <div class="form-group">
                     <label asp-for="Country" class="control-label"></label> <!-- Assuming you have a Country property -->
                     <select asp-for="Country" class="form-control" data-toggle="tooltip" title="Select the country the city belongs to">
                         <option value="">Select Country</option>
                         @* Populate this with actual country data, e.g., from a ViewBag or list *@
-                        @foreach (var country in ViewBag.Countries) // Make sure you pass a list of countries from the controller
+                       @*  @foreach (var country in ViewBag.Countries) // Make sure you pass a list of countries from the controller
                         {
                             <option value="@country">@country</option>
                         }
                     </select>
                     <span asp-validation-for="Country" class="text-danger"></span>
-                </div>
+                </div> *@ 
 
                 <!-- Optional: Add city image upload -->
-                <div class="form-group">
+                @* <div class="form-group">
                     <label asp-for="Image" class="control-label"></label> <!-- Assuming there is an Image property -->
                     <input asp-for="Image" type="file" class="form-control" />
                     <span asp-validation-for="Image" class="text-danger"></span>
-                </div>
+                </div> *@
 
             </div>
         </div>
