@@ -23,7 +23,7 @@ public partial class BuildingEmployee
 
     public int? UserId { get; set; }
 
-    public int ServiceCategoryId { get; set; }
+    public int EmployeeTypeId { get; set; }
 
     public bool IsActive { get; set; }
 
@@ -33,12 +33,12 @@ public partial class BuildingEmployee
     [InverseProperty("BuildingEmployees")]
     public virtual Building Building { get; set; }
 
+    [ForeignKey("EmployeeTypeId")]
+    [InverseProperty("BuildingEmployees")]
+    public virtual EmployeeType EmployeeType { get; set; }
+
     [InverseProperty("BuildingEmployee")]
     public virtual ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } = new List<MaintenanceRequest>();
-
-    [ForeignKey("ServiceCategoryId")]
-    [InverseProperty("BuildingEmployees")]
-    public virtual ServiceCategory ServiceCategory { get; set; }
 
     [ForeignKey("UserId")]
     [InverseProperty("BuildingEmployees")]
